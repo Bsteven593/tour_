@@ -1,24 +1,26 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './components/Home';
+import LoginForm from './components/Login';
+import RegisterForm from './components/Register';
+import Dashboard from './components/DashBoarAdmin'; // Corregido el nombre del componente
 
 function App() {
+  const menuItems = [
+    { title: 'Transporte', link: '/transporte' },
+    { title: 'Hospedaje', link: '/hospedaje' },
+    { title: 'Alimentación', link: '/alimentacion' }
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
+        <Route path="/dashboard" element={<Dashboard menuItems={menuItems} />} />
+      </Routes>
+    </Router>
   );
 }
 
