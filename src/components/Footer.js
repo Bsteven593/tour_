@@ -1,6 +1,6 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Importar Bootstrap CSS
-import 'bootstrap-icons/font/bootstrap-icons.css'; // Para íconos de Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+import 'bootstrap-icons/font/bootstrap-icons.css'; 
 
 
 function Footer() {
