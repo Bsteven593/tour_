@@ -1,8 +1,8 @@
-const API_URL = 'http://localhost:8080/api/vi'; // Cambia la URL base según la configuración de tu backend
+const API_URL = 'http://localhost:8080/api/vu'; // Cambia la URL base según la configuración de tu backend
 
 const userService = {
   async createUser(data) {
-    const response = await fetch(`${API_URL}/`, {
+    const response = await fetch(`${API_URL}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

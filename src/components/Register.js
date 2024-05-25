@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NavbarComponent from './Navbar';
-import userService from '../service/user';
+import userService from '../service/userService';
 
 function RegisterForm() {
   const navigate = useNavigate();
