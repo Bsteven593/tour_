@@ -13,7 +13,7 @@ function RegisterForm() {
     email: '',
     password: '',
     address: '',
-    gender: '',
+    gender: 'hombre',
     bloodType:'',
     birthday: '',
     maritalState:'',
@@ -58,15 +58,15 @@ function RegisterForm() {
               </div>
               <div className="mb-3">
                 <label htmlFor="fullNames" className="form-label">Apellido:</label>
-                <input type="text" className="form-control" id="fullNames" value={formData.fullNames} onChange={handleChange} placeholder="Nombre completo" />
+                <input type="text" className="form-control" id="fullNames" value={formData.fullNames} onChange={handleChange} placeholder="Apellodos completos" />
               </div>
               <div className="mb-3">
                 <label htmlFor="dni" className="form-label">Cédula:</label>
-                <input type="number" className="form-control" id="dni" value={formData.dni} onChange={handleChange} placeholder="Nombre completo" />
+                <input type="number" className="form-control" id="dni" value={formData.dni} onChange={handleChange} placeholder="1700000000" />
               </div>
               <div className="mb-3">
                 <label htmlFor="phone" className="form-label">Celular:</label>
-                <input type="number" className="form-control" id="phone" value={formData.phone} onChange={handleChange} placeholder="Nombre completo" />
+                <input type="number" className="form-control" id="phone" value={formData.phone} onChange={handleChange} placeholder="0999999999" />
               </div>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">Correo Electrónico:</label>
