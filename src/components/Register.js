@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NavbarComponent from './Navbar';
+import AlertRegister from '../components/AlertRegister';
 import userService from '../service/userService';
+import '../styles/AlertRegister.css'; 
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -9,15 +11,15 @@ function RegisterForm() {
     names: '',
     fullNames: '',
     dni: '',
-    phone:'',
+    phone: '',
     email: '',
     password: '',
     address: '',
     gender: 'hombre',
-    bloodType:'',
+    bloodType: '',
     birthday: '',
-    maritalState:'',
-    emergencyContact:'',
+    maritalState: '',
+    emergencyContact: '',
     emergencyPhone: '',
     disease: '',
     disability: ''
@@ -30,16 +32,75 @@ function RegisterForm() {
     });
   };
 
+  const validateForm = () => {
+    let isValid = true;
+
+    if (!formData.names) {
+      AlertRegister.showError('Atento', "El campo 'Nombre' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.fullNames) {
+      AlertRegister.showError('Atento', "El campo 'Apellido' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.dni) {
+      AlertRegister.showError('Atento', "El campo 'Cédula' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.phone) {
+      AlertRegister.showError('Atento', "El campo 'Celular' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.email) {
+      AlertRegister.showError('Atento', "El campo 'Correo Electrónico' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.password) {
+      AlertRegister.showError('Atento', "El campo 'Contraseña' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.address) {
+      AlertRegister.showError('Atento', "El campo 'Dirección' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.gender) {
+      AlertRegister.showError('Atento', "El campo 'Género' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.birthday) {
+      AlertRegister.showError('Error', "El campo 'Fecha de Nacimiento' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.bloodType) {
+      AlertRegister.showError('Atento', "El campo 'Tipo de Sangre' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.maritalState) {
+      AlertRegister.showError('Atento', "El campo 'Estado Civil' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.emergencyContact) {
+      AlertRegister.showError('Atento', "El campo 'Contacto de Emergencia' es obligatorio.");
+      isValid = false;
+    }
+    if (!formData.emergencyPhone) {
+      AlertRegister.showError('Atento', "El campo 'Teléfono de Emergencia' es obligatorio.");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const newUser = await userService.createUser(formData);
-      console.log('Nuevo usuario creado:', newUser);
-      // Redirigir a la página de inicio de sesión o a otra página
-      navigate('/');
-    } catch (error) {
-      console.error('Error al crear nuevo usuario:', error);
-      // Manejar el error apropiadamente, mostrar un mensaje de error, etc.
+    if (validateForm()) {
+      try {
+        const newUser = await userService.createUser(formData);
+        console.log('Nuevo usuario creado:', newUser);
+        navigate('/');
+      } catch (error) {
+        console.error('Error al crear nuevo usuario:', error);
+      }
     }
   };
 
@@ -53,31 +114,31 @@ function RegisterForm() {
             <div className="col-md-6">
               {/* Primera columna */}
               <div className="mb-3">
-                <label htmlFor="names" className="form-label">Nombre:</label>
+                <label htmlFor="names" className="form-label"><b>*</b>Nombre:</label>
                 <input type="text" className="form-control" id="names" value={formData.names} onChange={handleChange} placeholder="Nombre completo" />
               </div>
               <div className="mb-3">
-                <label htmlFor="fullNames" className="form-label">Apellido:</label>
-                <input type="text" className="form-control" id="fullNames" value={formData.fullNames} onChange={handleChange} placeholder="Apellodos completos" />
+                <label htmlFor="fullNames" className="form-label"><b>*</b>Apellido:</label>
+                <input type="text" className="form-control" id="fullNames" value={formData.fullNames} onChange={handleChange} placeholder="Apellidos completos" />
               </div>
               <div className="mb-3">
-                <label htmlFor="dni" className="form-label">Cédula:</label>
+                <label htmlFor="dni" className="form-label"><b>*</b>Cédula:</label>
                 <input type="number" className="form-control" id="dni" value={formData.dni} onChange={handleChange} placeholder="1700000000" />
               </div>
               <div className="mb-3">
-                <label htmlFor="phone" className="form-label">Celular:</label>
+                <label htmlFor="phone" className="form-label"><b>*</b>Celular:</label>
                 <input type="number" className="form-control" id="phone" value={formData.phone} onChange={handleChange} placeholder="0999999999" />
               </div>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">Correo Electrónico:</label>
+                <label htmlFor="email" className="form-label"><b>*</b>Correo Electrónico:</label>
                 <input type="email" className="form-control" id="email" value={formData.email} onChange={handleChange} placeholder="Correo Electrónico" />
               </div>
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">Contraseña:</label>
+                <label htmlFor="password" className="form-label"><b>*</b>Contraseña:</label>
                 <input type="password" className="form-control" id="password" value={formData.password} onChange={handleChange} placeholder="Contraseña" />
               </div>
               <div className="mb-3">
-                <label htmlFor="address" className="form-label">Dirección:</label>
+                <label htmlFor="address" className="form-label"><b>*</b>Dirección:</label>
                 <input type="text" className="form-control" id="address" value={formData.address} onChange={handleChange} placeholder="Dirección" />
               </div>
               <div className="mb-3">
@@ -92,11 +153,11 @@ function RegisterForm() {
             <div className="col-md-6">
               {/* Segunda columna */}
               <div className="mb-3">
-                <label htmlFor="birthday" className="form-label">Fecha de Nacimiento:</label>
+                <label htmlFor="birthday" className="form-label"><b>*</b>Fecha de Nacimiento:</label>
                 <input type="date" className="form-control" id="birthday" value={formData.birthday} onChange={handleChange} />
               </div>
               <div className="mb-3">
-                <label htmlFor="bloodType" className="form-label">Tipo de Sangre:</label>
+                <label htmlFor="bloodType" className="form-label"><b>*</b>Tipo de Sangre:</label>
                 <select className="form-select" id="bloodType" value={formData.bloodType} onChange={handleChange}>
                   <option value="">Seleccionar tipo de sangre</option>
                   <option value="A+">A+</option>
@@ -110,7 +171,7 @@ function RegisterForm() {
                 </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="maritalState" className="form-label">Estado Civil:</label>
+                <label htmlFor="maritalState" className="form-label"><b>*</b>Estado Civil:</label>
                 <select className="form-select" id="maritalState" value={formData.maritalState} onChange={handleChange}>
                   <option value="">Seleccionar estado civil</option>
                   <option value="soltero">Soltero/a</option>
@@ -120,11 +181,11 @@ function RegisterForm() {
                 </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="emergencyContact" className="form-label">Contacto de Emergencia:</label>
+                <label htmlFor="emergencyContact" className="form-label"><b>*</b>Contacto de Emergencia:</label>
                 <input type="text" className="form-control" id="emergencyContact" value={formData.emergencyContact} onChange={handleChange} placeholder="Contacto de Emergencia" />
               </div>
               <div className="mb-3">
-                <label htmlFor="emergencyPhone" className="form-label">Teléfono de Emergencia:</label>
+                <label htmlFor="emergencyPhone" className="form-label"><b>*</b>Teléfono de Emergencia:</label>
                 <input type="number" className="form-control" id="emergencyPhone" value={formData.emergencyPhone} onChange={handleChange} placeholder="Teléfono de Emergencia" />
               </div>
               <div className="mb-3">

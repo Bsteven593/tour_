@@ -6,6 +6,7 @@ import Hotel from '../components/Hotel';
 import Restaurant from '../components/Restaurant';
 import Transport from '../components/Transport';
 import Tour from '../components/Tour';
+import UserRol from '../components/UserRol';
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('v-pills-home');
@@ -40,6 +41,9 @@ function Dashboard() {
           <button className={`nav-link ${activeTab === 'v-pills-package' && 'active'}`} id="v-pills-package-tab" onClick={() => handleSelect('v-pills-package')}>
             Paquetes
           </button>
+          <button className={`nav-link ${activeTab === 'v-pills-roles' && 'active'}`} id="v-pills-roles-tab" onClick={() => handleSelect('v-pills-roles')}>
+            Roles
+          </button>
           <button className="nav-link" onClick={handleLogout}>
             Salir
           </button>
@@ -64,6 +68,10 @@ function Dashboard() {
 
           <div className={`tab-pane fade ${activeTab === 'v-pills-package' && 'show active'}`} id="v-pills-package" role="tabpanel">
             <Tour />
+          </div>
+
+          <div className={`tab-pane fade ${activeTab === 'v-pills-roles' && 'show active'}`} id="v-pills-roles" role="tabpanel">
+            <UserRol />
           </div>
         </div>
       </div>
