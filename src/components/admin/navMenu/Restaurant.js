@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import restaurantService from '../service/restaurantService';
+import restaurantService from '../../../service/restaurantService';
 
 function Restaurant() {
   const [restaurants, setRestaurants] = useState([]);

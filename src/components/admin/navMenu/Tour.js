@@ -1,6 +1,6 @@
 // src/components/Tour.js
 import React, { useState, useEffect } from 'react';
-import tourService from '../service/tourService';
+import tourService from '../../../service/tourService';
 
 function Tour() {
   const [tours, setTours] = useState([]);
@@ -96,6 +96,22 @@ function Tour() {
           </select>
         </div>
         <div className="mb-3">
+                    <label htmlFor="days_duration" className="form-label">Conductores</label>
+                    <select className="form-select" id="days_duration" name="days_duration"  required>
+                      <option value="1">1 día</option>
+                      <option value="3">3 días</option>
+                    
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="days_duration" className="form-label">Guías Turísticos</label>
+                    <select className="form-select" id="days_duration" name="days_duration"  required>
+                      <option value="1">1 día</option>
+                      <option value="3">3 días</option>
+                    
+                    </select>
+                  </div>
+        <div className="mb-3">
           <label htmlFor="sector" className="form-label">Sector / Lugar</label>
           <input type="text" className="form-control" id="sector" name="sector" value={newTour.sector} onChange={handleChange} required />
         </div>
@@ -172,6 +188,22 @@ function Tour() {
                       <option value="20">20 días</option>
                       <option value="25">25 días</option>
                       <option value="30">30 días</option>
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="days_duration" className="form-label">Conductores</label>
+                    <select className="form-select" id="days_duration" name="days_duration"  required>
+                      <option value="1">1 día</option>
+                      <option value="3">3 días</option>
+                    
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="days_duration" className="form-label">Guías Turísticos</label>
+                    <select className="form-select" id="days_duration" name="days_duration"  required>
+                      <option value="1">1 día</option>
+                      <option value="3">3 días</option>
+                    
                     </select>
                   </div>
                   <div className="mb-3">

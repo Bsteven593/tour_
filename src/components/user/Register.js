@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import NavbarComponent from './Navbar';
-import AlertRegister from '../components/AlertRegister';
-import userService from '../service/userService';
-import '../styles/AlertRegister.css'; 
+import NavbarComponent from '../Navbar';
+import AlertRegister from '../AlertRegister';
+import userService from '../../service/userService';
+import '../../styles/AlertRegister.css'; 
 
 function RegisterForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    names: '',
     fullNames: '',
+    lastNames: '',
     dni: '',
     phone: '',
     email: '',
@@ -35,11 +35,11 @@ function RegisterForm() {
   const validateForm = () => {
     let isValid = true;
 
-    if (!formData.names) {
+    if (!formData.fullNames) {
       AlertRegister.showError('Atento', "El campo 'Nombre' es obligatorio.");
       isValid = false;
     }
-    if (!formData.fullNames) {
+    if (!formData.lastNames) {
       AlertRegister.showError('Atento', "El campo 'Apellido' es obligatorio.");
       isValid = false;
     }
@@ -114,12 +114,12 @@ function RegisterForm() {
             <div className="col-md-6">
               {/* Primera columna */}
               <div className="mb-3">
-                <label htmlFor="names" className="form-label"><b>*</b>Nombre:</label>
-                <input type="text" className="form-control" id="names" value={formData.names} onChange={handleChange} placeholder="Nombre completo" />
+                <label htmlFor="fullNames" className="form-label"><b>*</b>Nombre:</label>
+                <input type="text" className="form-control" id="fullNames" value={formData.fullNames} onChange={handleChange} placeholder="Nombre completo" />
               </div>
               <div className="mb-3">
-                <label htmlFor="fullNames" className="form-label"><b>*</b>Apellido:</label>
-                <input type="text" className="form-control" id="fullNames" value={formData.fullNames} onChange={handleChange} placeholder="Apellidos completos" />
+                <label htmlFor="lastNames" className="form-label"><b>*</b>Apellido:</label>
+                <input type="text" className="form-control" id="lastNames" value={formData.lastNames} onChange={handleChange} placeholder="Apellidos completos" />
               </div>
               <div className="mb-3">
                 <label htmlFor="dni" className="form-label"><b>*</b>Cédula:</label>

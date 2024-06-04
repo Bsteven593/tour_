@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import NavbarComponent from './Navbar'; 
+import NavbarComponent from '../Navbar'; 
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Importar Bootstrap CSS
 import 'bootstrap-icons/font/bootstrap-icons.css'; // Para íconos de Bootstrap

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import transportService from '../service/transportService';
+import transportService from '../../../service/transportService';
 
 function Transport() {
   const [transports, setTransports] = useState([]);
