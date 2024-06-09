@@ -1,0 +1,12 @@
+.nav-pills-container {
+    padding: 1rem;
+}
+
+.nav-pills .nav-link {
+    margin-bottom: 0.5rem;
+}
+
+.tab-content {
+    padding: 1rem;
+    background-color: white;
+}
