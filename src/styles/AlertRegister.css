@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 /* src/components/AlertRegister.css */
 .custom-swal-popup {
     background-color: #E0F7FA; /* Celeste claro */
@@ -20,27 +20,5 @@
 
 b{
   color: red;
-=======
-/* src/components/AlertRegister.css */
-.custom-swal-popup {
-    background-color: #E0F7FA; /* Celeste claro */
-  }
-  
-  .custom-swal-title {
-    color: #0277BD; /* Azul plomo */
-  }
-  
-  .custom-swal-content {
-    color: #37474F; /* Gris oscuro */
-  }
-  
-  .custom-swal-confirm-button {
-    background-color: #0277BD; /* Azul plomo */
-    color: #FFFFFF; /* Blanco */
-  }
 
-
-b{
-  color: red;
->>>>>>> robert
 }
