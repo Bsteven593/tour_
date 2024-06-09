@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import NavbarComponent from '../Navbar';
 import AlertRegister from '../AlertRegister';
-import userService from '../../service/userService';
+import authService from '../../service/authService'; // Asegúrate de que la ruta es correcta
 import '../../styles/AlertRegister.css'; 
 
 function RegisterForm() {
@@ -15,14 +15,15 @@ function RegisterForm() {
     email: '',
     password: '',
     address: '',
-    gender: 'hombre',
+    genre: 'hombre',
     bloodType: '',
     birthday: '',
     maritalState: '',
     emergencyContact: '',
     emergencyPhone: '',
     disease: '',
-    disability: ''
+    disability: '',
+    username: ''  // Agregado el campo username
   });
 
   const handleChange = (e) => {
@@ -35,58 +36,29 @@ function RegisterForm() {
   const validateForm = () => {
     let isValid = true;
 
-    if (!formData.fullNames) {
-      AlertRegister.showError('Atento', "El campo 'Nombre' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.lastNames) {
-      AlertRegister.showError('Atento', "El campo 'Apellido' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.dni) {
-      AlertRegister.showError('Atento', "El campo 'Cédula' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.phone) {
-      AlertRegister.showError('Atento', "El campo 'Celular' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.email) {
-      AlertRegister.showError('Atento', "El campo 'Correo Electrónico' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.password) {
-      AlertRegister.showError('Atento', "El campo 'Contraseña' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.address) {
-      AlertRegister.showError('Atento', "El campo 'Dirección' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.gender) {
-      AlertRegister.showError('Atento', "El campo 'Género' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.birthday) {
-      AlertRegister.showError('Error', "El campo 'Fecha de Nacimiento' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.bloodType) {
-      AlertRegister.showError('Atento', "El campo 'Tipo de Sangre' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.maritalState) {
-      AlertRegister.showError('Atento', "El campo 'Estado Civil' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.emergencyContact) {
-      AlertRegister.showError('Atento', "El campo 'Contacto de Emergencia' es obligatorio.");
-      isValid = false;
-    }
-    if (!formData.emergencyPhone) {
-      AlertRegister.showError('Atento', "El campo 'Teléfono de Emergencia' es obligatorio.");
-      isValid = false;
-    }
+    // Validaciones
+    const fields = [
+      { id: 'fullNames', label: "Nombre" },
+      { id: 'lastNames', label: "Apellido" },
+      { id: 'dni', label: "Cédula" },
+      { id: 'phone', label: "Celular" },
+      { id: 'email', label: "Correo Electrónico" },
+      { id: 'password', label: "Contraseña" },
+      { id: 'address', label: "Dirección" },
+      { id: 'genre', label: "Género" },
+      { id: 'birthday', label: "Fecha de Nacimiento" },
+      { id: 'bloodType', label: "Tipo de Sangre" },
+      { id: 'maritalState', label: "Estado Civil" },
+      { id: 'emergencyContact', label: "Contacto de Emergencia" },
+      { id: 'emergencyPhone', label: "Teléfono de Emergencia" }
+    ];
+
+    fields.forEach(field => {
+      if (!formData[field.id]) {
+        AlertRegister.showError('Atento', `El campo '${field.label}' es obligatorio.`);
+        isValid = false;
+      }
+    });
 
     return isValid;
   };
@@ -95,11 +67,15 @@ function RegisterForm() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const newUser = await userService.createUser(formData);
+        const newUser = await authService.register(formData);
         console.log('Nuevo usuario creado:', newUser);
+        // Almacenar el token en localStorage
+        const token = newUser.token;
+        localStorage.setItem('token', token);
         navigate('/');
       } catch (error) {
         console.error('Error al crear nuevo usuario:', error);
+        AlertRegister.showError('Error', 'No se pudo crear el usuario. Intenta nuevamente.');
       }
     }
   };
@@ -113,6 +89,10 @@ function RegisterForm() {
           <div className="row">
             <div className="col-md-6">
               {/* Primera columna */}
+              <div className="mb-3">
+                <label htmlFor="username" className="form-label"><b>*</b>Nombre de Usuario:</label>
+                <input type="text" className="form-control" id="username" value={formData.username} onChange={handleChange} placeholder="Nombre de Usuario" />
+              </div>
               <div className="mb-3">
                 <label htmlFor="fullNames" className="form-label"><b>*</b>Nombre:</label>
                 <input type="text" className="form-control" id="fullNames" value={formData.fullNames} onChange={handleChange} placeholder="Nombre completo" />
@@ -142,8 +122,8 @@ function RegisterForm() {
                 <input type="text" className="form-control" id="address" value={formData.address} onChange={handleChange} placeholder="Dirección" />
               </div>
               <div className="mb-3">
-                <label htmlFor="gender" className="form-label">Género:</label>
-                <select className="form-select" id="gender" value={formData.gender} onChange={handleChange}>
+                <label htmlFor="genre" className="form-label">Género:</label>
+                <select className="form-select" id="genre" value={formData.genre} onChange={handleChange}>
                   <option value="hombre">Hombre</option>
                   <option value="mujer">Mujer</option>
                   <option value="otros">Otros</option>
@@ -209,5 +189,6 @@ function RegisterForm() {
     </div>
   );
 }
-
 export default RegisterForm;
+
+ 
