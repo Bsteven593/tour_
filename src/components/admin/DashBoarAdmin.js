@@ -1,6 +1,6 @@
-
-// src/components/Dashboard.js
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faHotel, faCar, faUtensils, faBox, faUserShield, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import NavbarComponent from '../Navbar';
 import HomeDashboard from './navMenu/HomeDashboard';
 import Hotel from './navMenu/Hotel';
@@ -36,7 +36,7 @@ function Dashboard() {
                 onClick={() => handleSelect('v-pills-home')}
                 style={activeTab === 'v-pills-home' ? { backgroundColor: '#00bcd4', color: 'black' } : {}}
               >
-                Vistas
+                <FontAwesomeIcon icon={faHome} /> Vistas
               </button>
               <button
                 className={`nav-link ${activeTab === 'v-pills-profile' && 'active'}`}
@@ -44,7 +44,7 @@ function Dashboard() {
                 onClick={() => handleSelect('v-pills-profile')}
                 style={activeTab === 'v-pills-profile' ? { backgroundColor: '#00bcd4', color: 'black' } : {}}
               >
-                Hoteles
+                <FontAwesomeIcon icon={faHotel} /> Hoteles
               </button>
               <button
                 className={`nav-link ${activeTab === 'v-pills-messages' && 'active'}`}
@@ -52,7 +52,7 @@ function Dashboard() {
                 onClick={() => handleSelect('v-pills-messages')}
                 style={activeTab === 'v-pills-messages' ? { backgroundColor: '#00bcd4', color: 'black' } : {}}
               >
-                Transporte
+                <FontAwesomeIcon icon={faCar} /> Transporte
               </button>
               <button
                 className={`nav-link ${activeTab === 'v-pills-settings' && 'active'}`}
@@ -60,7 +60,7 @@ function Dashboard() {
                 onClick={() => handleSelect('v-pills-settings')}
                 style={activeTab === 'v-pills-settings' ? { backgroundColor: '#00bcd4', color: 'black' } : {}}
               >
-                Restaurantes
+                <FontAwesomeIcon icon={faUtensils} /> Restaurantes
               </button>
               <button
                 className={`nav-link ${activeTab === 'v-pills-package' && 'active'}`}
@@ -68,7 +68,7 @@ function Dashboard() {
                 onClick={() => handleSelect('v-pills-package')}
                 style={activeTab === 'v-pills-package' ? { backgroundColor: '#00bcd4', color: 'black' } : {}}
               >
-                Paquetes
+                <FontAwesomeIcon icon={faBox} /> Paquetes
               </button>
               <button
                 className={`nav-link ${activeTab === 'v-pills-roles' && 'active'}`}
@@ -76,10 +76,10 @@ function Dashboard() {
                 onClick={() => handleSelect('v-pills-roles')}
                 style={activeTab === 'v-pills-roles' ? { backgroundColor: '#00bcd4', color: 'black' } : {}}
               >
-                Roles
+                <FontAwesomeIcon icon={faUserShield} /> Roles
               </button>
               <button className="nav-link" onClick={handleLogout} style={{ backgroundColor: '#ff5252', color: 'black' }}>
-                Salir
+                <FontAwesomeIcon icon={faSignOutAlt} /> Salir
               </button>
             </div>
           </div>
@@ -116,4 +116,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-

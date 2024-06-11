@@ -29,7 +29,7 @@ const HomeDashboard = () => {
                 <button onClick={toggleOpen} className={`btn ${isOpen ? 'btn-danger' : 'btn-success'}`}>
                   {isOpen ? 'Cerrar' : 'Abrir'}
                 </button>
-                <a href="#" className="btn btn-primary">Ver más detalles</a>
+            
               </div>
             </div>
           </div>
@@ -38,6 +38,4 @@ const HomeDashboard = () => {
     </div>
   );
 };
-
-
 export default HomeDashboard;

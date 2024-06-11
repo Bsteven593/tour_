@@ -1,7 +1,8 @@
-
+// src/components/UserRol.js
 import React, { useState, useEffect } from 'react';
 import userService from '../../../service/userService';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../styles/Home.css';
 
 const UserRol = ({ handleAssignRole }) => {
   const [users, setUsers] = useState([]);
@@ -22,7 +23,7 @@ const UserRol = ({ handleAssignRole }) => {
   return (
     <div className="container">
       <div className="table-responsive">
-        <table className="table table-striped">
+        <table className="table table-striped table-hover custom-table">
           <thead>
             <tr>
               <th>ID</th>

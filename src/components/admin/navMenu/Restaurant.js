@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import restaurantService from '../../../service/restaurantService';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../styles/Home.css'; // Asegúrate de crear y vincular este archivo CSS
 
 function Restaurant() {
   const [restaurants, setRestaurants] = useState([]);
@@ -90,16 +90,32 @@ function Restaurant() {
   };
 
   return (
-    <div className="container">
+    <div className="container mt-5">
       <form onSubmit={handleSubmit}>
         <div className="row mb-3">
           <div className="col-12 col-md-6">
             <label htmlFor="name" className="form-label">Nombre</label>
-            <input type="text" className="form-control" id="name" name="name" value={newRestaurant.name} onChange={handleNameChange} required />
+            <input 
+              type="text" 
+              className="form-control" 
+              id="name" 
+              name="name" 
+              value={newRestaurant.name} 
+              onChange={handleNameChange} 
+              required 
+            />
           </div>
           <div className="col-12 col-md-6">
             <label htmlFor="price" className="form-label">Precio</label>
-            <input type="text" className="form-control" id="price" name="price" value={newRestaurant.price} onChange={handlePriceChange} required />
+            <input 
+              type="text" 
+              className="form-control" 
+              id="price" 
+              name="price" 
+              value={newRestaurant.price} 
+              onChange={handlePriceChange} 
+              required 
+            />
           </div>
         </div>
         <button type="submit" className="btn btn-primary">Guardar</button>
@@ -107,9 +123,9 @@ function Restaurant() {
       <br />
       <br />
       <div className="table-responsive">
-        <table className="table">
+        <table className="table table-striped table-hover table-bordered">
           <thead>
-            <tr>
+            <tr className="table-primary">
               <th scope="col">#</th>
               <th scope="col">Nombre</th>
               <th scope="col">Precio</th>
@@ -144,11 +160,27 @@ function Restaurant() {
                 <form onSubmit={handleUpdateSubmit}>
                   <div className="mb-3">
                     <label htmlFor="update-name" className="form-label">Nombre</label>
-                    <input type="text" className="form-control" id="update-name" name="name" value={editingRestaurant.name} onChange={handleUpdateNameChange} required />
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      id="update-name" 
+                      name="name" 
+                      value={editingRestaurant.name} 
+                      onChange={handleUpdateNameChange} 
+                      required 
+                    />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="update-price" className="form-label">Precio</label>
-                    <input type="text" className="form-control" id="update-price" name="price" value={editingRestaurant.price} onChange={handleUpdatePriceChange} required />
+                    <input 
+                      type="number" 
+                      className="form-control" 
+                      id="update-price" 
+                      name="price" 
+                      value={editingRestaurant.price} 
+                      onChange={handleUpdatePriceChange} 
+                      required 
+                    />
                   </div>
                   <button type="submit" className="btn btn-primary">Guardar cambios</button>
                 </form>

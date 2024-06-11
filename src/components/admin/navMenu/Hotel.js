@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import hotelService from '../../../service/hotelService';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../styles/Home.css';
 
 function Hotel() {
   const [hotels, setHotels] = useState([]);
@@ -63,7 +64,7 @@ function Hotel() {
   };
 
   return (
-    <div className="container">
+    <div className="container mt-5">
       <form onSubmit={handleSubmit}>
         <div className="row mb-3">
           <div className="col-12 col-md-6">
@@ -128,9 +129,9 @@ function Hotel() {
       <br />
       <br />
       <div className="table-responsive">
-        <table className="table">
+        <table className="table table-striped table-hover table-bordered">
           <thead>
-            <tr>
+            <tr className="table-primary">
               <th scope="col">#</th>
               <th scope="col">Nombre</th>
               <th scope="col">Dirección</th>
@@ -139,7 +140,7 @@ function Hotel() {
               <th scope="col">Acciones</th>
             </tr>
           </thead>
-          <tbody className="table-group-divider">
+          <tbody>
             {hotels.map((hotel, index) => (
               <tr key={hotel.id}>
                 <th scope="row">{index + 1}</th>
@@ -196,7 +197,7 @@ function Hotel() {
                   <div className="mb-3">
                     <label htmlFor="phone" className="form-label">Teléfono</label>
                     <input 
-                      type="text" 
+                      type="number" 
                       className="form-control" 
                       id="phone" 
                       name="phone" 
