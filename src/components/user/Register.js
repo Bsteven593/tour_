@@ -92,15 +92,17 @@ function RegisterForm() {
     return isValid;
   };
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       try {
         const newUser = await userService.createUser(formData);
         console.log('Nuevo usuario creado:', newUser);
-        navigate('/');
+        navigate('/'); // Redirige a la página principal después del registro
       } catch (error) {
         console.error('Error al crear nuevo usuario:', error);
+        AlertRegister.showError('Error', 'Error al crear usuario. Intente más tarde.');
       }
     }
   };
