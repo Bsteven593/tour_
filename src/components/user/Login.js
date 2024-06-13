@@ -1,14 +1,10 @@
 
 import React, { useState } from 'react';
-<<<<<<< HEAD:src/components/user/Login.js
 
-import NavbarComponent from '../Navbar'; 
-import { Link } from 'react-router-dom';
-=======
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import NavbarComponent from './Navbar';
->>>>>>> blad1:src/components/Login.js
+import NavbarComponent from '../Navbar';
+
 import 'bootstrap/dist/css/bootstrap.min.css'; // Importar Bootstrap CSS
 import 'bootstrap-icons/font/bootstrap-icons.css'; // Para íconos de Bootstrap
 
@@ -83,9 +79,7 @@ function LoginForm() {
   );
 }
 
-<<<<<<< HEAD:src/components/user/Login.js
+
 
 export default LoginForm;
-=======
-export default LoginForm;
->>>>>>> blad1:src/components/Login.js
+

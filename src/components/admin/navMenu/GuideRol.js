@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import NavbarComponent from '../Navbar';
-import AlertRegister from '../AlertRegister';
-import { createUser } from '../../service/AuthService';
-import '../../styles/AlertRegister.css';
+import AlertRegister from '../../AlertRegister';
+import { createGuide } from '../../../service/AuthService';
+import '../../../styles/AlertRegister.css'; 
 
-function RegisterForm() {
-  const navigate = useNavigate();
+function GuideRol() {
   const [formData, setFormData] = useState({
     fullnames: '',
     lastnames: '',
-    username: '',    // Añadido campo username
+    username: '', 
     dni: '',
     phone: '',
     email: '',
@@ -101,15 +99,15 @@ function RegisterForm() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const newUser = await createUser(formData); // Usar createUser directamente
+        const newUser = await createGuide(formData);
         console.log('Nuevo usuario creado:', newUser);
         Swal.fire({
           title: 'Éxito',
-          text: 'Usuario creado con éxito',
+          text: 'Guía creado con éxito',
           icon: 'success',
           confirmButtonText: 'OK'
         }).then(() => {
-          navigate('/'); // Redirige a la página principal después del registro
+          window.location.reload(); // Recarga la página actual después del registro
         });
       } catch (error) {
         console.error('Error al crear nuevo usuario:', error);
@@ -120,10 +118,9 @@ function RegisterForm() {
 
   return (
     <div>
-      <NavbarComponent />
       <div className="container p-10">
         <form className="formulario__register" onSubmit={handleSubmit}>
-          <h2 className="text-center">Regístrate</h2>
+          <h2 className="text-center">Registra un Guía</h2>
           <div className="row">
             <div className="col-md-6">
               {/* Primera columna */}
@@ -228,4 +225,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm;
+export default GuideRol;

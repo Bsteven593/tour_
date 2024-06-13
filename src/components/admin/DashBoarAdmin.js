@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faHotel, faCar, faUtensils, faBox, faUserShield, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faHotel, faCar, faUtensils, faBox, faUserShield, faSignOutAlt, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import NavbarComponent from '../Navbar';
 import HomeDashboard from './navMenu/HomeDashboard';
 import Hotel from './navMenu/Hotel';
@@ -8,17 +8,31 @@ import Restaurant from './navMenu/Restaurant';
 import Transport from './navMenu/Transport';
 import Tour from './navMenu/Tour';
 import UserRol from './navMenu/UserRol';
+import DriveRol from './navMenu/DriveRol'; // Import DriveRol component
+import GuideRol from './navMenu/GuideRol'; // Import GuideRol component
 import '../../styles/Dashboard.css';
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('v-pills-home');
+  const [showRoleButtons, setShowRoleButtons] = useState(false);
+  const [activeRole, setActiveRole] = useState(null); // New state for sub-role selection
 
   const handleSelect = (selectedTab) => {
     setActiveTab(selectedTab);
+    if (selectedTab === 'v-pills-roles') {
+      setShowRoleButtons(true);
+    } else {
+      setShowRoleButtons(false);
+      setActiveRole(null); // Reset sub-role selection when leaving roles tab
+    }
   };
 
   const handleLogout = () => {
     console.log('Cerrar sesión');
+  };
+
+  const handleRoleSelect = (role) => {
+    setActiveRole(role);
   };
 
   return (
@@ -78,6 +92,24 @@ function Dashboard() {
               >
                 <FontAwesomeIcon icon={faUserShield} /> Roles
               </button>
+              {showRoleButtons && (
+                <div className="role-buttons">
+                  <button
+                    className="nav-link sub-role-button"
+                    style={{ backgroundColor: activeRole === 'conductores' ? '#00bcd4' : '', color: activeRole === 'conductores' ? 'black' : '' }}
+                    onClick={() => handleRoleSelect('conductores')}
+                  >
+                    <FontAwesomeIcon icon={faCar} /> Conductores
+                  </button>
+                  <button
+                    className="nav-link sub-role-button"
+                    style={{ backgroundColor: activeRole === 'guias' ? '#00bcd4' : '', color: activeRole === 'guias' ? 'black' : '' }}
+                    onClick={() => handleRoleSelect('guias')}
+                  >
+                    <FontAwesomeIcon icon={faMapMarkerAlt} /> Guías
+                  </button>
+                </div>
+              )}
               <button className="nav-link" onClick={handleLogout} style={{ backgroundColor: '#ff5252', color: 'black' }}>
                 <FontAwesomeIcon icon={faSignOutAlt} /> Salir
               </button>
@@ -106,7 +138,9 @@ function Dashboard() {
             </div>
 
             <div className={`tab-pane fade ${activeTab === 'v-pills-roles' && 'show active'}`} id="v-pills-roles" role="tabpanel">
-              <UserRol />
+              {!activeRole && <UserRol />}
+              {activeRole === 'conductores' && <DriveRol />}
+              {activeRole === 'guias' && <GuideRol />}
             </div>
           </div>
         </div>
