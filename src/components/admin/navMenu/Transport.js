@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import transportService from '../../../service/transportService';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,6 +11,8 @@ export function Transport() {
   useEffect(() => {
     transportService.getAllTransports().then(data => {
       setTransports(data);
+    }).catch(error => {
+      console.error('Error al cargar transportes:', error);
     });
   }, []);
 
@@ -23,14 +24,30 @@ export function Transport() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    transportService.createTransport(newTransport).then(data => {
-      setTransports([...transports, data]);
-      setNewTransport({ name: '', price: '', capacity: '' });
-    }).catch(error => {
+    if (!newTransport.name || !newTransport.price || !newTransport.capacity) {
+      alert('Por favor, complete todos los campos.');
+      return;
+    }
+
+    const transportData = {
+      ...newTransport,
+      price: parseFloat(newTransport.price),
+      capacity: parseInt(newTransport.capacity, 10)
+    };
+
+    try {
+      const data = await transportService.createTransport(transportData);
+      if (data.id) {
+        setTransports([...transports, data]);
+        setNewTransport({ name: '', price: '', capacity: '' });
+      } else {
+        console.error('El transporte creado no tiene un ID:', data);
+      }
+    } catch (error) {
       console.error('Error al crear el transporte:', error);
-    });
+    }
   };
 
   const handleUpdateChange = (e) => {
@@ -41,24 +58,36 @@ export function Transport() {
     });
   };
 
-  const handleUpdateSubmit = (e) => {
+  const handleUpdateSubmit = async (e) => {
     e.preventDefault();
-    const id = editingTransport.id;
-    transportService.partialUpdateTransport(id, editingTransport).then(updatedTransport => {
+    if (!editingTransport.name || !editingTransport.price || !editingTransport.capacity) {
+      alert('Por favor, complete todos los campos.');
+      return;
+    }
+
+    const transportData = {
+      ...editingTransport,
+      price: parseFloat(editingTransport.price),
+      capacity: parseInt(editingTransport.capacity, 10)
+    };
+
+    try {
+      const updatedTransport = await transportService.partialUpdateTransport(editingTransport.id, transportData);
       setTransports(transports.map(transport => (transport.id === updatedTransport.id ? updatedTransport : transport)));
       setEditingTransport(null);
       setIsModalOpen(false);
-    }).catch(error => {
+    } catch (error) {
       console.error('Error al actualizar el transporte:', error);
-    });
+    }
   };
 
-  const handleDelete = (id) => {
-    transportService.deleteTransportById(id).then(() => {
+  const handleDelete = async (id) => {
+    try {
+      await transportService.deleteTransportById(id);
       setTransports(transports.filter(transport => transport.id !== id));
-    }).catch(error => {
+    } catch (error) {
       console.error('Error al eliminar el transporte:', error);
-    });
+    }
   };
 
   const handleEdit = (transport) => {
@@ -92,28 +121,30 @@ export function Transport() {
           <div className="col-md-4 mb-3">
             <label htmlFor="price" className="form-label">Precio</label>
             <input
-              type="text"
+              type="number"
               className="form-control"
               id="price"
               name="price"
               value={newTransport.price}
               onChange={handleChange}
               required
-              pattern="\d+" // Solo permite números enteros positivos
-              title="El precio solo debe contener números enteros positivos."
+              min="0" // Valor mínimo de 0
+              step="0.01" // Permite decimales
+              title="El precio solo debe contener números positivos."
             />
           </div>
           <div className="col-md-4 mb-3">
             <label htmlFor="capacity" className="form-label">Capacidad</label>
             <input
-              type="text"
+              type="number"
               className="form-control"
               id="capacity"
               name="capacity"
               value={newTransport.capacity}
               onChange={handleChange}
               required
-              pattern="\d+" // Solo permite números enteros positivos
+              min="1" // Capacidad mínima de 1
+              step="1" // Solo permite números enteros
               title="La capacidad solo debe contener números enteros positivos."
             />
           </div>
@@ -183,8 +214,9 @@ export function Transport() {
                       value={editingTransport.price}
                       onChange={handleUpdateChange}
                       required
-                      pattern="\d+" // Solo permite números enteros positivos
-                      title="El precio solo debe contener números enteros positivos."
+                      min="0" // Valor mínimo de 0
+                      step="0.01" // Permite decimales
+                      title="El precio solo debe contener números positivos."
                     />
                   </div>
                   <div className="mb-3">
@@ -197,7 +229,8 @@ export function Transport() {
                       value={editingTransport.capacity}
                       onChange={handleUpdateChange}
                       required
-                      pattern="\d+" // Solo permite números enteros positivos
+                      min="1" // Capacidad mínima de 1
+                      step="1" // Solo permite números enteros
                       title="La capacidad solo debe contener números enteros positivos."
                     />
                   </div>
@@ -213,4 +246,3 @@ export function Transport() {
 }
 
 export default Transport;
-
