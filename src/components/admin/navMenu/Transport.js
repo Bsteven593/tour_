@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import transportService from '../../../service/transportService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Transport() {
+export function Transport() {
   const [transports, setTransports] = useState([]);
   const [newTransport, setNewTransport] = useState({ name: '', price: '', capacity: '' });
   const [editingTransport, setEditingTransport] = useState(null);

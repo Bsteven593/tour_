@@ -7,7 +7,7 @@ import transportService from '../../../service/transportService';
 import hotelService from '../../../service/hotelService';
 import restaurantService from '../../../service/restaurantService';
 
-function Tour() {
+export function Tour() {
   const [tours, setTours] = useState([]);
   const [transports, setTransports] = useState([]);
   const [hotels, setHotels] = useState([]);

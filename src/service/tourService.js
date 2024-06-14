@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api/vto'; // Cambia la URL base según la configuración de tu backend
+const API_URL = 'http://localhost:8080/api/v1'; // Cambia la URL base según la configuración de tu backend
 
 const tourService = {
   async createTour(data) {

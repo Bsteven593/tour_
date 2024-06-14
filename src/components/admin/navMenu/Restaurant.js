@@ -3,7 +3,7 @@ import restaurantService from '../../../service/restaurantService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/Home.css'; // Asegúrate de crear y vincular este archivo CSS
 
-function Restaurant() {
+export function Restaurant() {
   const [restaurants, setRestaurants] = useState([]);
   const [newRestaurant, setNewRestaurant] = useState({ name: '', price: '' });
   const [editingRestaurant, setEditingRestaurant] = useState(null);

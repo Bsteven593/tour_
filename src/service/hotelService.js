@@ -1,5 +1,5 @@
 
-const API_URL = 'http://localhost:8080/api/vh'; // Cambia la URL base según la configuración de tu backend
+const API_URL = 'http://localhost:8080/api/v1'; // Cambia la URL base según la configuración de tu backend
 
 const hotelService = {
   async createHotel(data) {

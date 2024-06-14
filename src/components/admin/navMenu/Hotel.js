@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import hotelService from '../../../service/hotelService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/Home.css';
 
-function Hotel() {
+export function Hotel() {
   const [hotels, setHotels] = useState([]);
   const [newHotel, setNewHotel] = useState({ name: '', address: '', phone: '', email: '' });
   const [editingHotel, setEditingHotel] = useState(null);
@@ -12,6 +11,8 @@ function Hotel() {
   useEffect(() => {
     hotelService.getAllHotels().then(data => {
       setHotels(data);
+    }).catch(error => {
+      console.error('Error al cargar hoteles:', error);
     });
   }, []);
 
@@ -25,9 +26,19 @@ function Hotel() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Validar el estado del nuevo hotel antes de enviarlo
+    if (!newHotel.name || !newHotel.address || !newHotel.phone || !newHotel.email) {
+      alert('Por favor, complete todos los campos.');
+      return;
+    }
+
     hotelService.createHotel(newHotel).then(data => {
-      setHotels([...hotels, data]);
-      setNewHotel({ name: '', address: '', phone: '', email: '' });
+      if (data.id) {
+        setHotels([...hotels, data]);
+        setNewHotel({ name: '', address: '', phone: '', email: '' });
+      } else {
+        console.error('El hotel creado no tiene un ID:', data);
+      }
     }).catch(error => {
       console.error('Error al crear el hotel:', error);
     });
@@ -43,9 +54,19 @@ function Hotel() {
 
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
+
+    if (!editingHotel.name || !editingHotel.address || !editingHotel.phone || !editingHotel.email) {
+      alert('Por favor, complete todos los campos.');
+      return;
+    }
+
     hotelService.partialUpdateHotel(editingHotel.id, editingHotel).then(updatedHotel => {
-      setHotels(hotels.map(hotel => (hotel.id === updatedHotel.id ? updatedHotel : hotel)));
-      setEditingHotel(null);
+      if (updatedHotel && updatedHotel.id) {
+        setHotels(hotels.map(hotel => (hotel.id === updatedHotel.id ? updatedHotel : hotel)));
+        setEditingHotel(null);
+      } else {
+        console.error('El hotel actualizado no tiene un ID:', updatedHotel);
+      }
     }).catch(error => {
       console.error('Error al actualizar el hotel:', error);
     });
@@ -234,4 +255,3 @@ function Hotel() {
 }
 
 export default Hotel;
-
