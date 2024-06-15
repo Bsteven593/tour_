@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import restaurantService from '../../../service/restaurantService';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../../styles/Home.css'; // Asegúrate de crear y vincular este archivo CSS
 
-export function Restaurant() {
+function Restaurant() {
   const [restaurants, setRestaurants] = useState([]);
-  const [newRestaurant, setNewRestaurant] = useState({ name: '', price: '' });
+  const [newRestaurant, setNewRestaurant] = useState({ name: '', address: '' });
   const [editingRestaurant, setEditingRestaurant] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
@@ -15,51 +13,19 @@ export function Restaurant() {
     });
   }, []);
 
-  const handleNameChange = (e) => {
-    const { value } = e.target;
-    if (/^[a-zA-Z\s]*$/.test(value)) {
-      setNewRestaurant({
-        ...newRestaurant,
-        name: value
-      });
-    }
-  };
-
-  const handlePriceChange = (e) => {
-    const { value } = e.target;
-    if (/^\d*$/.test(value)) {
-      setNewRestaurant({
-        ...newRestaurant,
-        price: value
-      });
-    }
-  };
-
-  const handleUpdateNameChange = (e) => {
-    const { value } = e.target;
-    if (/^[a-zA-Z\s]*$/.test(value)) {
-      setEditingRestaurant({
-        ...editingRestaurant,
-        name: value
-      });
-    }
-  };
-
-  const handleUpdatePriceChange = (e) => {
-    const { value } = e.target;
-    if (/^\d*$/.test(value)) {
-      setEditingRestaurant({
-        ...editingRestaurant,
-        price: value
-      });
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewRestaurant({
+      ...newRestaurant,
+      [name]: value
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     restaurantService.createRestaurant(newRestaurant).then(data => {
       setRestaurants([...restaurants, data]);
-      setNewRestaurant({ name: '', price: '' });
+      setNewRestaurant({ name: '', address: '' });
     }).catch(error => {
       console.error('Error al crear el restaurante:', error);
     });
@@ -78,6 +44,14 @@ export function Restaurant() {
     setShowUpdateModal(true);
   };
 
+  const handleUpdateChange = (e) => {
+    const { name, value } = e.target;
+    setEditingRestaurant({
+      ...editingRestaurant,
+      [name]: value
+    });
+  };
+
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
     restaurantService.partialUpdateRestaurant(editingRestaurant.id, editingRestaurant).then(updatedRestaurant => {
@@ -90,63 +64,43 @@ export function Restaurant() {
   };
 
   return (
-    <div className="container mt-5">
+    <div>
       <form onSubmit={handleSubmit}>
-        <div className="row mb-3">
-          <div className="col-12 col-md-6">
-            <label htmlFor="name" className="form-label">Nombre</label>
-            <input 
-              type="text" 
-              className="form-control" 
-              id="name" 
-              name="name" 
-              value={newRestaurant.name} 
-              onChange={handleNameChange} 
-              required 
-            />
-          </div>
-          <div className="col-12 col-md-6">
-            <label htmlFor="price" className="form-label">Precio</label>
-            <input 
-              type="text" 
-              className="form-control" 
-              id="price" 
-              name="price" 
-              value={newRestaurant.price} 
-              onChange={handlePriceChange} 
-              required 
-            />
-          </div>
+        <div className="mb-3">
+          <label htmlFor="name" className="form-label">Nombre</label>
+          <input type="text" className="form-control" id="name" name="name" value={newRestaurant.name} onChange={handleChange} required />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="address" className="form-label">Dirección</label>
+          <input type="text" className="form-control" id="address" name="address" value={newRestaurant.address} onChange={handleChange} required />
         </div>
         <button type="submit" className="btn btn-primary">Guardar</button>
       </form>
       <br />
       <br />
-      <div className="table-responsive">
-        <table className="table table-striped table-hover table-bordered">
-          <thead>
-            <tr className="table-primary">
-              <th scope="col">#</th>
-              <th scope="col">Nombre</th>
-              <th scope="col">Precio</th>
-              <th scope="col">Acciones</th>
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Dirección</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody className="table-group-divider">
+          {restaurants.map((restaurant, index) => (
+            <tr key={restaurant.id}>
+              <th scope="row">{index + 1}</th>
+              <td>{restaurant.name}</td>
+              <td>{restaurant.address}</td>
+              <td>
+                <button className="btn btn-warning me-2" onClick={() => handleEdit(restaurant)}>Actualizar</button>
+                <button className="btn btn-danger" onClick={() => handleDelete(restaurant.id)}>Eliminar</button>
+              </td>
             </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {restaurants.map((restaurant, index) => (
-              <tr key={restaurant.id}>
-                <th scope="row">{index + 1}</th>
-                <td>{restaurant.name}</td>
-                <td>{restaurant.price}</td>
-                <td>
-                  <button className="btn btn-warning me-2" onClick={() => handleEdit(restaurant)}>Actualizar</button>
-                  <button className="btn btn-danger" onClick={() => handleDelete(restaurant.id)}>Eliminar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
 
       {showUpdateModal && editingRestaurant && (
         <div className="modal show" style={{ display: 'block' }}>
@@ -160,27 +114,11 @@ export function Restaurant() {
                 <form onSubmit={handleUpdateSubmit}>
                   <div className="mb-3">
                     <label htmlFor="update-name" className="form-label">Nombre</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="update-name" 
-                      name="name" 
-                      value={editingRestaurant.name} 
-                      onChange={handleUpdateNameChange} 
-                      required 
-                    />
+                    <input type="text" className="form-control" id="update-name" name="name" value={editingRestaurant.name} onChange={handleUpdateChange} required />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="update-price" className="form-label">Precio</label>
-                    <input 
-                      type="number" 
-                      className="form-control" 
-                      id="update-price" 
-                      name="price" 
-                      value={editingRestaurant.price} 
-                      onChange={handleUpdatePriceChange} 
-                      required 
-                    />
+                    <label htmlFor="update-address" className="form-label">Dirección</label>
+                    <input type="text" className="form-control" id="update-address" name="address" value={editingRestaurant.address} onChange={handleUpdateChange} required />
                   </div>
                   <button type="submit" className="btn btn-primary">Guardar cambios</button>
                 </form>
