@@ -1,4 +1,3 @@
-// src/components/TourModal.js
 import React from 'react';
 
 const TourModal = ({ tour, drivers, guides, transports, hotels, restaurants, onUpdateChange, onUpdateSubmit, onClose }) => {
@@ -12,6 +11,7 @@ const TourModal = ({ tour, drivers, guides, transports, hotels, restaurants, onU
           </div>
           <div className="modal-body">
             <form onSubmit={onUpdateSubmit}>
+              {/* Form fields */}
               <div className="mb-3">
                 <label htmlFor="name" className="form-label">Nombre</label>
                 <input type="text" className="form-control" id="name" name="name" value={tour.name} onChange={onUpdateChange} required />
@@ -27,19 +27,14 @@ const TourModal = ({ tour, drivers, guides, transports, hotels, restaurants, onU
               <div className="mb-3">
                 <label htmlFor="days_duration" className="form-label">Días de duración</label>
                 <select className="form-select" id="days_duration" name="days_duration" value={tour.days_duration} onChange={onUpdateChange} required>
-                  <option value="1">1 día</option>
-                  <option value="3">3 días</option>
-                  <option value="7">7 días</option>
-                  <option value="10">10 días</option>
-                  <option value="15">15 días</option>
-                  <option value="20">20 días</option>
-                  <option value="25">25 días</option>
-                  <option value="30">30 días</option>
+                  {[1, 3, 7, 10, 15, 20, 25, 30].map(day => (
+                    <option key={day} value={day}>{day} día{day > 1 && 's'}</option>
+                  ))}
                 </select>
               </div>
               <div className="mb-3">
                 <label htmlFor="conductors" className="form-label">Conductores</label>
-                <select className="form-select" id="conductors" name="conductors" value={tour.conductors} onChange={onUpdateChange} required>
+                <select className="form-select" id="conductors" name="conductors" value={tour.conductors?.[0]?.id || ''} onChange={onUpdateChange} required>
                   {drivers.map(user => (
                     <option key={user.id} value={user.id}>{user.fullnames}</option>
                   ))}
@@ -47,7 +42,7 @@ const TourModal = ({ tour, drivers, guides, transports, hotels, restaurants, onU
               </div>
               <div className="mb-3">
                 <label htmlFor="guides" className="form-label">Guías Turísticos</label>
-                <select className="form-select" id="guides" name="guides" value={tour.guides} onChange={onUpdateChange} required>
+                <select className="form-select" id="guides" name="guides" value={tour.guides?.[0]?.id || ''} onChange={onUpdateChange} required>
                   {guides.map(user => (
                     <option key={user.id} value={user.id}>{user.fullnames}</option>
                   ))}
@@ -55,7 +50,7 @@ const TourModal = ({ tour, drivers, guides, transports, hotels, restaurants, onU
               </div>
               <div className="mb-3">
                 <label htmlFor="transport" className="form-label">Transporte</label>
-                <select className="form-select" id="transport" name="transport" value={tour.transport} onChange={onUpdateChange} required>
+                <select className="form-select" id="transport" name="transport" value={tour.transport?.id || ''} onChange={onUpdateChange} required>
                   {transports.map(transport => (
                     <option key={transport.id} value={transport.id}>{transport.name}</option>
                   ))}
@@ -63,7 +58,7 @@ const TourModal = ({ tour, drivers, guides, transports, hotels, restaurants, onU
               </div>
               <div className="mb-3">
                 <label htmlFor="hotel" className="form-label">Hoteles</label>
-                <select className="form-select" id="hotel" name="hotel" value={tour.hotel} onChange={onUpdateChange} required>
+                <select className="form-select" id="hotel" name="hotel" value={tour.hotel?.id || ''} onChange={onUpdateChange} required>
                   {hotels.map(hotel => (
                     <option key={hotel.id} value={hotel.id}>{hotel.name}</option>
                   ))}
@@ -71,7 +66,7 @@ const TourModal = ({ tour, drivers, guides, transports, hotels, restaurants, onU
               </div>
               <div className="mb-3">
                 <label htmlFor="restaurant" className="form-label">Restaurantes</label>
-                <select className="form-select" id="restaurant" name="restaurant" value={tour.restaurant} onChange={onUpdateChange} required>
+                <select className="form-select" id="restaurant" name="restaurant" value={tour.restaurant?.id || ''} onChange={onUpdateChange} required>
                   {restaurants.map(restaurant => (
                     <option key={restaurant.id} value={restaurant.id}>{restaurant.name}</option>
                   ))}

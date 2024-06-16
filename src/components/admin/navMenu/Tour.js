@@ -1,48 +1,48 @@
 // src/components/Tour.js
 import React, { useState, useEffect } from 'react';
 import tourService from '../../../service/tourService';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../../styles/Home.css';
 import transportService from '../../../service/transportService';
 import hotelService from '../../../service/hotelService';
 import restaurantService from '../../../service/restaurantService';
 import userService from '../../../service/userService';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../styles/Home.css';
+import TourModal from './TourModal';
 
-export function Tour() {
+const Tour = () => {
   const [users, setUsers] = useState([]);
   const [tours, setTours] = useState([]);
   const [transports, setTransports] = useState([]);
   const [hotels, setHotels] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
-  const [newTour, setNewTour] = useState({
-    name: '', description: '', price: '', days_duration: '1', sector: '', start_date: '',
-    conductors: '', guides: '', transport: '', hotel: '', restaurant: ''
-  });
+  const [newTour, setNewTour] = useState({ name: '', description: '', price: '', days_duration: '1', sector: '', start_date: '', conductors: '', guides: '', transport: '', hotel: '', restaurant: '' });
   const [editingTour, setEditingTour] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   useEffect(() => {
-    tourService.getAllTours().then(data => setTours(data));
-    transportService.getAllTransports().then(data => setTransports(data));
-    hotelService.getAllHotels().then(data => setHotels(data));
-    restaurantService.getAllRestaurants().then(data => setRestaurants(data));
-    userService.getAllUsers().then(data => setUsers(data));
+    Promise.all([
+      tourService.getAllTours(),
+      transportService.getAllTransports(),
+      hotelService.getAllHotels(),
+      restaurantService.getAllRestaurants(),
+      userService.getAllUsers()
+    ]).then(([tours, transports, hotels, restaurants, users]) => {
+      setTours(tours);
+      setTransports(transports);
+      setHotels(hotels);
+      setRestaurants(restaurants);
+      setUsers(users);
+    });
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewTour({
-      ...newTour,
-      [name]: value
-    });
+    setNewTour(prevTour => ({ ...prevTour, [name]: value }));
   };
 
   const handleSelectChange = (e) => {
     const { name, value } = e.target;
-    setNewTour({
-      ...newTour,
-      [name]: value
-    });
+    setNewTour(prevTour => ({ ...prevTour, [name]: value }));
   };
 
   const handleSubmit = (e) => {
@@ -57,22 +57,15 @@ export function Tour() {
     };
 
     tourService.createTour(tourData).then(data => {
-      setTours([...tours, data]);
-      setNewTour({
-        name: '', description: '', price: '', days_duration: '1', sector: '', start_date: '',
-        conductors: '', guides: '', transport: '', hotel: '', restaurant: ''
-      });
-    }).catch(error => {
-      console.error('Error al crear el tour:', error);
-    });
+      setTours(prevTours => [...prevTours, data]);
+      setNewTour({ name: '', description: '', price: '', days_duration: '1', sector: '', start_date: '', conductors: '', guides: '', transport: '', hotel: '', restaurant: '' });
+    }).catch(console.error);
   };
 
   const handleDelete = (id) => {
     tourService.deleteTourById(id).then(() => {
-      setTours(tours.filter(tour => tour.id !== id));
-    }).catch(error => {
-      console.error('Error al eliminar el tour:', error);
-    });
+      setTours(prevTours => prevTours.filter(tour => tour.id !== id));
+    }).catch(console.error);
   };
 
   const handleEdit = (tour) => {
@@ -82,21 +75,25 @@ export function Tour() {
 
   const handleUpdateChange = (e) => {
     const { name, value } = e.target;
-    setEditingTour({
-      ...editingTour,
-      [name]: value
-    });
+    setEditingTour(prevTour => ({ ...prevTour, [name]: value }));
   };
 
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
-    tourService.partialUpdateTour(editingTour.id, editingTour).then(updatedTour => {
-      setTours(tours.map(tour => (tour.id === updatedTour.id ? updatedTour : tour)));
+    const updatedTourData = {
+      ...editingTour,
+      conductors: editingTour.conductors ? [{ id: parseInt(editingTour.conductors) }] : [],
+      guides: editingTour.guides ? [{ id: parseInt(editingTour.guides) }] : [],
+      transport: { id: parseInt(editingTour.transport) },
+      hotel: { id: parseInt(editingTour.hotel) },
+      restaurant: { id: parseInt(editingTour.restaurant) }
+    };
+
+    tourService.partialUpdateTour(editingTour.id, updatedTourData).then(updatedTour => {
+      setTours(prevTours => prevTours.map(tour => tour.id === updatedTour.id ? updatedTour : tour));
       setEditingTour(null);
       setShowUpdateModal(false);
-    }).catch(error => {
-      console.error('Error al actualizar el tour:', error);
-    });
+    }).catch(console.error);
   };
 
   const drivers = users.filter(user => user.role === 'DRIVER');
@@ -106,77 +103,42 @@ export function Tour() {
     <div className="container">
       <form onSubmit={handleSubmit}>
         <div className="row mb-3">
-          <div className="col-12 col-md-6">
-            <label htmlFor="name" className="form-label">Nombre</label>
-            <input type="text" className="form-control" id="name" name="name" value={newTour.name} onChange={handleChange} required />
-          </div>
-          <div className="col-12 col-md-6">
-            <label htmlFor="description" className="form-label">Descripción</label>
-            <input type="text" className="form-control" id="description" name="description" value={newTour.description} onChange={handleChange} required />
-          </div>
-          <div className="col-12 col-md-6">
-            <label htmlFor="price" className="form-label">Precio</label>
-            <input type="text" className="form-control" id="price" name="price" value={newTour.price} onChange={handleChange} required />
-          </div>
+          {['name', 'description', 'price', 'sector'].map(field => (
+            <div key={field} className="col-12 col-md-6">
+              <label htmlFor={field} className="form-label">{field === 'price' ? 'Precio' : field.charAt(0).toUpperCase() + field.slice(1)}</label>
+              <input type={field === 'price' ? 'number' : 'text'} className="form-control" id={field} name={field} value={newTour[field]} onChange={handleChange} required />
+            </div>
+          ))}
           <div className="col-12 col-md-6">
             <label htmlFor="days_duration" className="form-label">Días de duración</label>
             <select className="form-select" id="days_duration" name="days_duration" value={newTour.days_duration} onChange={handleChange} required>
-              <option value="1">1 día</option>
-              <option value="3">3 días</option>
-              <option value="7">7 días</option>
-              <option value="10">10 días</option>
-              <option value="15">15 días</option>
-              <option value="20">20 días</option>
-              <option value="25">25 días</option>
-              <option value="30">30 días</option>
-            </select>
-          </div>
-          <div className="col-12 col-md-6">
-            <label htmlFor="conductors" className="form-label">Conductores</label>
-            <select className="form-select" id="conductors" name="conductors" value={newTour.conductors || ''} onChange={handleSelectChange} required>
-              <option value="">Seleccionar conductor</option>
-              {drivers.map(user => (
-                <option key={user.id} value={user.id}>{user.fullnames}</option>
+              {[1, 3, 7, 10, 15, 20, 25, 30].map(day => (
+                <option key={day} value={day}>{day} día{day > 1 && 's'}</option>
               ))}
             </select>
           </div>
-          <div className="col-12 col-md-6">
-            <label htmlFor="guides" className="form-label">Guías Turísticos</label>
-            <select className="form-select" id="guides" name="guides" value={newTour.guides || ''} onChange={handleSelectChange} required>
-              <option value="">Seleccionar guía</option>
-              {guides.map(user => (
-                <option key={user.id} value={user.id}>{user.fullnames}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col-12 col-md-6">
-            <label htmlFor="transport" className="form-label">Transportes</label>
-            <select className="form-select" id="transport" name="transport" value={newTour.transport || ''} onChange={handleChange} required>
-              {transports.map(transport => (
-                <option key={transport.id} value={transport.id}>{transport.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col-12 col-md-6">
-            <label htmlFor="restaurant" className="form-label">Restaurantes</label>
-            <select className="form-select" id="restaurant" name="restaurant" value={newTour.restaurant || ''} onChange={handleChange} required>
-              {restaurants.map(restaurant => (
-                <option key={restaurant.id} value={restaurant.id}>{restaurant.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col-12 col-md-6">
-            <label htmlFor="hotel" className="form-label">Hoteles</label>
-            <select className="form-select" id="hotel" name="hotel" value={newTour.hotel || ''} onChange={handleChange} required>
-              {hotels.map(hotel => (
-                <option key={hotel.id} value={hotel.id}>{hotel.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col-12 col-md-6">
-            <label htmlFor="sector" className="form-label">Sector / Lugar</label>
-            <input type="text" className="form-control" id="sector" name="sector" value={newTour.sector} onChange={handleChange} required />
-          </div>
+          {['conductors', 'guides', 'transport', 'hotel', 'restaurant'].map(field => (
+            <div key={field} className="col-12 col-md-6">
+              <label htmlFor={field} className="form-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+              <select className="form-select" id={field} name={field} value={newTour[field] || ''} onChange={handleSelectChange} required>
+                {field === 'conductors' && drivers.map(user => (
+                  <option key={user.id} value={user.id}>{user.fullnames}</option>
+                ))}
+                {field === 'guides' && guides.map(user => (
+                  <option key={user.id} value={user.id}>{user.fullnames}</option>
+                ))}
+                {field === 'transport' && transports.map(transport => (
+                  <option key={transport.id} value={transport.id}>{transport.name}</option>
+                ))}
+                {field === 'hotel' && hotels.map(hotel => (
+                  <option key={hotel.id} value={hotel.id}>{hotel.name}</option>
+                ))}
+                {field === 'restaurant' && restaurants.map(restaurant => (
+                  <option key={restaurant.id} value={restaurant.id}>{restaurant.name}</option>
+                ))}
+              </select>
+            </div>
+          ))}
           <div className="col-12 col-md-6">
             <label htmlFor="start_date" className="form-label">Día que Empieza</label>
             <input type="date" className="form-control" id="start_date" name="start_date" value={newTour.start_date} onChange={handleChange} required />
@@ -190,26 +152,18 @@ export function Tour() {
         <table className="table table-striped table-hover">
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Nombre</th>
-              <th scope="col">Descripción</th>
-              <th scope="col">Precio</th>
-              <th scope="col">Días de duración</th>
-              <th scope="col">Sector / Lugar</th>
-              <th scope="col">Día que Empieza</th>
-              <th scope="col">Acciones</th>
+              {['#', 'Nombre', 'Descripción', 'Precio', 'Días de duración', 'Sector / Lugar', 'Día que Empieza', 'Acciones'].map(header => (
+                <th key={header} scope="col">{header}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {tours.map((tour, index) => (
               <tr key={tour.id}>
                 <th scope="row">{index + 1}</th>
-                <td>{tour.name}</td>
-                <td>{tour.description}</td>
-                <td>{tour.price}</td>
-                <td>{tour.days_duration}</td>
-                <td>{tour.sector}</td>
-                <td>{tour.start_date}</td>
+                {['name', 'description', 'price', 'days_duration', 'sector', 'start_date'].map(field => (
+                  <td key={field}>{tour[field]}</td>
+                ))}
                 <td>
                   <button className="btn btn-warning me-2" onClick={() => handleEdit(tour)}>Actualizar</button>
                   <button className="btn btn-danger" onClick={() => handleDelete(tour.id)}>Eliminar</button>
@@ -219,100 +173,22 @@ export function Tour() {
           </tbody>
         </table>
       </div>
-
       {showUpdateModal && editingTour && (
-        <div className="modal show" style={{ display: 'block' }}>
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Actualizar Tour</h5>
-                <button type="button" className="btn-close" onClick={() => setShowUpdateModal(false)}></button>
-              </div>
-              <div className="modal-body">
-                <form onSubmit={handleUpdateSubmit}>
-                  <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Nombre</label>
-                    <input type="text" className="form-control" id="name" name="name" value={editingTour.name} onChange={handleUpdateChange} required />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="description" className="form-label">Descripción</label>
-                    <input type="text" className="form-control" id="description" name="description" value={editingTour.description} onChange={handleUpdateChange} required />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="price" className="form-label">Precio</label>
-                    <input type="number" className="form-control" id="price" name="price" value={editingTour.price} onChange={handleUpdateChange} required />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="days_duration" className="form-label">Días de duración</label>
-                    <select className="form-select" id="days_duration" name="days_duration" value={editingTour.days_duration} onChange={handleUpdateChange} required>
-                      <option value="1">1 día</option>
-                      <option value="3">3 días</option>
-                      <option value="7">7 días</option>
-                      <option value="10">10 días</option>
-                      <option value="15">15 días</option>
-                      <option value="20">20 días</option>
-                      <option value="25">25 días</option>
-                      <option value="30">30 días</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="conductors" className="form-label">Conductores</label>
-                    <select className="form-select" id="conductors" name="conductors" value={editingTour.conductors} onChange={handleUpdateChange} required>
-                      {users.map(user => (
-                        <option key={user.id} value={user.id}>{user.fullnames}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="guides" className="form-label">Guías Turísticos</label>
-                    <select className="form-select" id="guides" name="guides" value={editingTour.guides} onChange={handleUpdateChange} required>
-                      {users.map(user => (
-                        <option key={user.id} value={user.id}>{user.fullnames}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="transport" className="form-label">Transporte</label>
-                    <select className="form-select" id="transport" name="transport" value={editingTour.transport} onChange={handleUpdateChange} required>
-                      {transports.map(transport => (
-                        <option key={transport.id} value={transport.id}>{transport.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="hotel" className="form-label">Hoteles</label>
-                    <select className="form-select" id="hotel" name="hotel" value={editingTour.hotel} onChange={handleUpdateChange} required>
-                      {hotels.map(hotel => (
-                        <option key={hotel.id} value={hotel.id}>{hotel.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="restaurant" className="form-label">Restaurantes</label>
-                    <select className="form-select" id="restaurant" name="restaurant" value={editingTour.restaurant} onChange={handleUpdateChange} required>
-                      {restaurants.map(restaurant => (
-                        <option key={restaurant.id} value={restaurant.id}>{restaurant.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="sector" className="form-label">Sector / Lugar</label>
-                    <input type="text" className="form-control" id="sector" name="sector" value={editingTour.sector} onChange={handleUpdateChange} required />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="start_date" className="form-label">Día que Empieza</label>
-                    <input type="date" className="form-control" id="start_date" name="start_date" value={editingTour.start_date} onChange={handleUpdateChange} required />
-                  </div>
-                  <button type="submit" className="btn btn-primary">Actualizar</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
+        <TourModal
+          tour={editingTour}
+          drivers={drivers}
+          guides={guides}
+          transports={transports}
+          hotels={hotels}
+          restaurants={restaurants}
+          onUpdateChange={handleUpdateChange}
+          onUpdateSubmit={handleUpdateSubmit}
+          onClose={() => setShowUpdateModal(false)}
+        />
       )}
     </div>
   );
-}
+};
 
 export default Tour;
+
