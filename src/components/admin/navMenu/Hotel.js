@@ -36,6 +36,7 @@ export function Hotel() {
       if (data.id) {
         setHotels([...hotels, data]);
         setNewHotel({ name: '', address: '', phone: '', email: '' });
+        window.location.reload();
       } else {
         console.error('El hotel creado no tiene un ID:', data);
       }

@@ -26,6 +26,7 @@ function Restaurant() {
     restaurantService.createRestaurant(newRestaurant).then(data => {
       setRestaurants([...restaurants, data]);
       setNewRestaurant({ name: '', address: '' });
+      window.location.reload();
     }).catch(error => {
       console.error('Error al crear el restaurante:', error);
     });

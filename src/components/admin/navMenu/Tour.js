@@ -59,6 +59,7 @@ const Tour = () => {
     tourService.createTour(tourData).then(data => {
       setTours(prevTours => [...prevTours, data]);
       setNewTour({ name: '', description: '', price: '', days_duration: '1', sector: '', start_date: '', conductors: '', guides: '', transport: '', hotel: '', restaurant: '' });
+      window.location.reload();
     }).catch(console.error);
   };
 

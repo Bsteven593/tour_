@@ -41,16 +41,14 @@ const UserRol = ({ handleAssignRole }) => {
             {users.map(user => (
               <tr key={user.id}>
                 <td>{user.id}</td>
-                <td>{user.fullNames}</td>
-                <td>{user.lastNames}</td>
+                <td>{user.fullnames}</td>
+                <td>{user.lastnames}</td>
                 <td>{user.dni}</td>
                 <td>{user.email}</td>
                 <td>{user.phone}</td>
                 <td>{user.disease}</td>
                 <td>{user.disability}</td>
-                <td>
-                  <button onClick={() => handleAssignRole(user.id, 'driver')} className="btn btn-primary btn-sm me-2">Asignar Conductor</button>
-                  <button onClick={() => handleAssignRole(user.id, 'tour_guide')} className="btn btn-success btn-sm">Asignar Guía Turístico</button>
+                <td>{user.role}
                 </td>
               </tr>
             ))}

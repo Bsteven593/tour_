@@ -42,6 +42,7 @@ export function Transport() {
       if (data.id) {
         setTransports([...transports, data]);
         setNewTransport({ name: '', price: '', capacity: '' });
+        window.location.reload();
       } else {
         console.error('El transporte creado no tiene un ID:', data);
       }
