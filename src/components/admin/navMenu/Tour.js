@@ -7,6 +7,7 @@ import transportService from '../../../service/transportService';
 import hotelService from '../../../service/hotelService';
 import restaurantService from '../../../service/restaurantService';
 import userService from '../../../service/userService';
+
 export function Tour() {
   const [users, setUsers] = useState([]);
   const [tours, setTours] = useState([]);
@@ -15,7 +16,7 @@ export function Tour() {
   const [restaurants, setRestaurants] = useState([]);
   const [newTour, setNewTour] = useState({
     name: '', description: '', price: '', days_duration: '1', sector: '', start_date: '',
-  conductors: '', guides: '', transport: '', hotel: '', restaurant: ''
+    conductors: '', guides: '', transport: '', hotel: '', restaurant: ''
   });
   const [editingTour, setEditingTour] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -36,12 +37,30 @@ export function Tour() {
     });
   };
 
+  const handleSelectChange = (e) => {
+    const { name, value } = e.target;
+    setNewTour({
+      ...newTour,
+      [name]: value
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    tourService.createTour(newTour).then(data => {
+    const tourData = {
+      ...newTour,
+      conductors: newTour.conductors ? [{ id: parseInt(newTour.conductors) }] : [],
+      guides: newTour.guides ? [{ id: parseInt(newTour.guides) }] : [],
+      transport: { id: parseInt(newTour.transport) },
+      hotel: { id: parseInt(newTour.hotel) },
+      restaurant: { id: parseInt(newTour.restaurant) }
+    };
+
+    tourService.createTour(tourData).then(data => {
       setTours([...tours, data]);
       setNewTour({
-        name: '', description: '', price: '', days_duration: '1', sector: '', start_date: ''
+        name: '', description: '', price: '', days_duration: '1', sector: '', start_date: '',
+        conductors: '', guides: '', transport: '', hotel: '', restaurant: ''
       });
     }).catch(error => {
       console.error('Error al crear el tour:', error);
@@ -79,7 +98,7 @@ export function Tour() {
       console.error('Error al actualizar el tour:', error);
     });
   };
-   // Filtrar usuarios por roles
+
   const drivers = users.filter(user => user.role === 'DRIVER');
   const guides = users.filter(user => user.role === 'GUIDE');
 
@@ -114,7 +133,8 @@ export function Tour() {
           </div>
           <div className="col-12 col-md-6">
             <label htmlFor="conductors" className="form-label">Conductores</label>
-            <select className="form-select" id="conductors" name="conductors" value={newTour.conductors} onChange={handleChange} required>
+            <select className="form-select" id="conductors" name="conductors" value={newTour.conductors || ''} onChange={handleSelectChange} required>
+              <option value="">Seleccionar conductor</option>
               {drivers.map(user => (
                 <option key={user.id} value={user.id}>{user.fullnames}</option>
               ))}
@@ -122,16 +142,16 @@ export function Tour() {
           </div>
           <div className="col-12 col-md-6">
             <label htmlFor="guides" className="form-label">Guías Turísticos</label>
-            <select className="form-select" id="guides" name="guides" value={newTour.guides} onChange={handleChange} required>
+            <select className="form-select" id="guides" name="guides" value={newTour.guides || ''} onChange={handleSelectChange} required>
+              <option value="">Seleccionar guía</option>
               {guides.map(user => (
                 <option key={user.id} value={user.id}>{user.fullnames}</option>
               ))}
             </select>
           </div>
-
           <div className="col-12 col-md-6">
             <label htmlFor="transport" className="form-label">Transportes</label>
-            <select className="form-select" id="transport" name="transport" value={newTour.transport} onChange={handleChange} required>
+            <select className="form-select" id="transport" name="transport" value={newTour.transport || ''} onChange={handleChange} required>
               {transports.map(transport => (
                 <option key={transport.id} value={transport.id}>{transport.name}</option>
               ))}
@@ -139,7 +159,7 @@ export function Tour() {
           </div>
           <div className="col-12 col-md-6">
             <label htmlFor="restaurant" className="form-label">Restaurantes</label>
-            <select className="form-select" id="restaurant" name="restaurant" value={newTour.restaurant} onChange={handleChange} required>
+            <select className="form-select" id="restaurant" name="restaurant" value={newTour.restaurant || ''} onChange={handleChange} required>
               {restaurants.map(restaurant => (
                 <option key={restaurant.id} value={restaurant.id}>{restaurant.name}</option>
               ))}
@@ -147,7 +167,7 @@ export function Tour() {
           </div>
           <div className="col-12 col-md-6">
             <label htmlFor="hotel" className="form-label">Hoteles</label>
-            <select className="form-select" id="hotel" name="hotel" value={newTour.hotel} onChange={handleChange} required>
+            <select className="form-select" id="hotel" name="hotel" value={newTour.hotel || ''} onChange={handleChange} required>
               {hotels.map(hotel => (
                 <option key={hotel.id} value={hotel.id}>{hotel.name}</option>
               ))}
