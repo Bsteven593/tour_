@@ -2,18 +2,20 @@
 import React, { useState, useEffect } from 'react';
 import tourService from '../../../service/tourService';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../../styles/Home.css'; 
+import '../../../styles/Home.css';
 import transportService from '../../../service/transportService';
 import hotelService from '../../../service/hotelService';
 import restaurantService from '../../../service/restaurantService';
-
+import userService from '../../../service/userService';
 export function Tour() {
+  const [users, setUsers] = useState([]);
   const [tours, setTours] = useState([]);
   const [transports, setTransports] = useState([]);
   const [hotels, setHotels] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
   const [newTour, setNewTour] = useState({
-    name: '', description: '', price: '', days_duration: '1', sector: '', start_date: ''
+    name: '', description: '', price: '', days_duration: '1', sector: '', start_date: '',
+  conductors: '', guides: '', transport: '', hotel: '', restaurant: ''
   });
   const [editingTour, setEditingTour] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -23,6 +25,7 @@ export function Tour() {
     transportService.getAllTransports().then(data => setTransports(data));
     hotelService.getAllHotels().then(data => setHotels(data));
     restaurantService.getAllRestaurants().then(data => setRestaurants(data));
+    userService.getAllUsers().then(data => setUsers(data));
   }, []);
 
   const handleChange = (e) => {
@@ -76,6 +79,9 @@ export function Tour() {
       console.error('Error al actualizar el tour:', error);
     });
   };
+   // Filtrar usuarios por roles
+  const drivers = users.filter(user => user.role === 'DRIVER');
+  const guides = users.filter(user => user.role === 'GUIDE');
 
   return (
     <div className="container">
@@ -108,18 +114,21 @@ export function Tour() {
           </div>
           <div className="col-12 col-md-6">
             <label htmlFor="conductors" className="form-label">Conductores</label>
-            <select className="form-select" id="conductors" name="conductors" required>
-              <option value="1">1 día</option>
-              <option value="3">3 días</option>
+            <select className="form-select" id="conductors" name="conductors" value={newTour.conductors} onChange={handleChange} required>
+              {drivers.map(user => (
+                <option key={user.id} value={user.id}>{user.fullnames}</option>
+              ))}
             </select>
           </div>
           <div className="col-12 col-md-6">
             <label htmlFor="guides" className="form-label">Guías Turísticos</label>
-            <select className="form-select" id="guides" name="guides" required>
-              <option value="1">1 día</option>
-              <option value="3">3 días</option>
+            <select className="form-select" id="guides" name="guides" value={newTour.guides} onChange={handleChange} required>
+              {guides.map(user => (
+                <option key={user.id} value={user.id}>{user.fullnames}</option>
+              ))}
             </select>
           </div>
+
           <div className="col-12 col-md-6">
             <label htmlFor="transport" className="form-label">Transportes</label>
             <select className="form-select" id="transport" name="transport" value={newTour.transport} onChange={handleChange} required>
@@ -229,17 +238,20 @@ export function Tour() {
                   <div className="mb-3">
                     <label htmlFor="conductors" className="form-label">Conductores</label>
                     <select className="form-select" id="conductors" name="conductors" value={editingTour.conductors} onChange={handleUpdateChange} required>
-                      <option value="1">1 día</option>
-                      <option value="3">3 días</option>
+                      {users.map(user => (
+                        <option key={user.id} value={user.id}>{user.fullnames}</option>
+                      ))}
                     </select>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="guides" className="form-label">Guías Turísticos</label>
                     <select className="form-select" id="guides" name="guides" value={editingTour.guides} onChange={handleUpdateChange} required>
-                      <option value="1">1 día</option>
-                      <option value="3">3 días</option>
+                      {users.map(user => (
+                        <option key={user.id} value={user.id}>{user.fullnames}</option>
+                      ))}
                     </select>
                   </div>
+
                   <div className="mb-3">
                     <label htmlFor="transport" className="form-label">Transporte</label>
                     <select className="form-select" id="transport" name="transport" value={editingTour.transport} onChange={handleUpdateChange} required>
