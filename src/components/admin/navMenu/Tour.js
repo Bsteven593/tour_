@@ -1,4 +1,3 @@
-// src/components/Tour.js
 import React, { useState, useEffect } from 'react';
 import tourService from '../../../service/tourService';
 import transportService from '../../../service/transportService';
@@ -120,9 +119,9 @@ const Tour = () => {
           </div>
           {['conductors', 'guides', 'transport', 'hotel', 'restaurant'].map(field => (
             <div key={field} className="col-12 col-md-6">
-              <label htmlFor={field} className="form-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+              <label htmlFor={field} className="form-label">{field === 'conductors' ? 'Conductores' : field === 'guides' ? 'Guías' : field === 'transport' ? 'Transporte' : field === 'hotel' ? 'Hotel' : 'Restaurante'}</label>
               <select className="form-select" id={field} name={field} value={newTour[field] || ''} onChange={handleSelectChange} required>
-                <option value="">{`Seleccionar ${field}`}</option>
+                <option value="">{`Seleccionar ${field === 'conductors' ? 'conductor' : field === 'guides' ? 'guía' : field === 'transport' ? 'transporte' : field === 'hotel' ? 'hotel' : 'restaurante'}`}</option>
                 {field === 'conductors' && drivers.map(user => (
                   <option key={user.id} value={user.id}>{user.fullnames}</option>
                 ))}
