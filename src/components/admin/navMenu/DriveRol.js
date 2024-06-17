@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Link,  } from 'react-router-dom';
+import React, { useState } from 'react'
 import Swal from 'sweetalert2';
 import AlertRegister from '../../AlertRegister';
 import { createDriver } from '../../../service/AuthService';
@@ -218,9 +217,7 @@ function DriveRol() {
             <button type="submit" className="btn btn-primary">Regístrate</button>
           </div>
         </form>
-        <div className="mt-3 text-center">
-          ¿Ya tienes una cuenta? <Link to="/">Iniciar Sesión</Link>
-        </div>
+        
       </div>
     </div>
   );

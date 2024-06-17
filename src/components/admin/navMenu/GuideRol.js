@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import Swal from 'sweetalert2';
 import AlertRegister from '../../AlertRegister';
 import { createGuide } from '../../../service/AuthService';
@@ -217,9 +217,7 @@ function GuideRol() {
             <button type="submit" className="btn btn-primary">Regístrate</button>
           </div>
         </form>
-        <div className="mt-3 text-center">
-          ¿Ya tienes una cuenta? <Link to="/">Iniciar Sesión</Link>
-        </div>
+        
       </div>
     </div>
   );

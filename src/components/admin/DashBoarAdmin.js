@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faHotel, faCar, faUtensils, faBox, faUserShield, faSignOutAlt, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 import NavbarComponent from '../Navbar';
 import HomeDashboard from './navMenu/HomeDashboard';
 import Hotel from './navMenu/Hotel';
@@ -16,6 +17,7 @@ function Dashboard() {
   const [activeTab, setActiveTab] = useState('v-pills-home');
   const [showRoleButtons, setShowRoleButtons] = useState(false);
   const [activeRole, setActiveRole] = useState(null); // New state for sub-role selection
+  const navigate = useNavigate(); // Hook de navegación
 
   const handleSelect = (selectedTab) => {
     setActiveTab(selectedTab);
@@ -29,6 +31,7 @@ function Dashboard() {
 
   const handleLogout = () => {
     console.log('Cerrar sesión');
+    navigate('/'); // Navegar a la página de autenticación
   };
 
   const handleRoleSelect = (role) => {

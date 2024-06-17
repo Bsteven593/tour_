@@ -122,6 +122,7 @@ const Tour = () => {
             <div key={field} className="col-12 col-md-6">
               <label htmlFor={field} className="form-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
               <select className="form-select" id={field} name={field} value={newTour[field] || ''} onChange={handleSelectChange} required>
+                <option value="">{`Seleccionar ${field}`}</option>
                 {field === 'conductors' && drivers.map(user => (
                   <option key={user.id} value={user.id}>{user.fullnames}</option>
                 ))}
@@ -192,4 +193,3 @@ const Tour = () => {
 };
 
 export default Tour;
-
