@@ -43,7 +43,9 @@ export function Transport() {
       if (data.id) {
         setTransports([...transports, data]);
         setNewTransport({ name: '', price: '', capacity: '' });
-        Swal.fire('Éxito', 'Transporte creado correctamente.', 'success');
+        Swal.fire('Éxito', 'Transporte creado correctamente.', 'success').then(() => {
+          window.location.reload();
+        });
       } else {
         console.error('El transporte creado no tiene un ID:', data);
       }
@@ -79,7 +81,9 @@ export function Transport() {
       setTransports(transports.map(transport => (transport.id === updatedTransport.id ? updatedTransport : transport)));
       setEditingTransport(null);
       setIsModalOpen(false);
-      Swal.fire('Éxito', 'Transporte actualizado correctamente.', 'success');
+      Swal.fire('Éxito', 'Transporte actualizado correctamente.', 'success').then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error('Error al actualizar el transporte:', error);
       Swal.fire('Error', 'Error al actualizar el transporte.', 'error');
@@ -99,7 +103,9 @@ export function Transport() {
         try {
           await transportService.deleteTransportById(id);
           setTransports(transports.filter(transport => transport.id !== id));
-          Swal.fire('Eliminado', 'Transporte eliminado correctamente.', 'success');
+          Swal.fire('Eliminado', 'Transporte eliminado correctamente.', 'success').then(() => {
+            window.location.reload();
+          });
         } catch (error) {
           console.error('Error al eliminar el transporte:', error);
           Swal.fire('Error', 'Error al eliminar el transporte.', 'error');

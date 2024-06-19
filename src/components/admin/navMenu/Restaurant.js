@@ -34,7 +34,9 @@ function Restaurant() {
     restaurantService.createRestaurant(newRestaurant).then(data => {
       setRestaurants([...restaurants, data]);
       setNewRestaurant({ name: '', address: '' });
-      Swal.fire('Éxito', 'Restaurante creado correctamente.', 'success');
+      Swal.fire('Éxito', 'Restaurante creado correctamente.', 'success').then(() => {
+        window.location.reload();
+      });
     }).catch(error => {
       console.error('Error al crear el restaurante:', error);
       Swal.fire('Error', 'Error al crear el restaurante.', 'error');
@@ -54,7 +56,9 @@ function Restaurant() {
         try {
           await restaurantService.deleteRestaurantById(id);
           setRestaurants(restaurants.filter(restaurant => restaurant.id !== id));
-          Swal.fire('Eliminado', 'Restaurante eliminado correctamente.', 'success');
+          Swal.fire('Eliminado', 'Restaurante eliminado correctamente.', 'success').then(() => {
+            window.location.reload();
+          });
         } catch (error) {
           console.error('Error al eliminar el restaurante:', error);
           Swal.fire('Error', 'Error al eliminar el restaurante.', 'error');
@@ -87,12 +91,15 @@ function Restaurant() {
       setRestaurants(restaurants.map(restaurant => (restaurant.id === updatedRestaurant.id ? updatedRestaurant : restaurant)));
       setEditingRestaurant(null);
       setShowUpdateModal(false);
-      Swal.fire('Éxito', 'Restaurante actualizado correctamente.', 'success');
+      Swal.fire('Éxito', 'Restaurante actualizado correctamente.', 'success').then(() => {
+        window.location.reload();
+      });
     }).catch(error => {
       console.error('Error al actualizar el restaurante:', error);
       Swal.fire('Error', 'Error al actualizar el restaurante.', 'error');
     });
   };
+
 
   return (
     <div>

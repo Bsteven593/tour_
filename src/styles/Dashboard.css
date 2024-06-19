@@ -39,3 +39,14 @@
   .nav-pills-container .nav-pills .nav-link .fa-icon {
     margin-right: 10px;
   }
+
+  /*Dashboar*/
+  .nav-pills .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 8px; /* Espacio entre icono y texto */
+  }
+  .nav-pills .sub-role-button {
+    margin-left: 20px; /* Sangría para sub-roles */
+  }

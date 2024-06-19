@@ -36,7 +36,9 @@ export function Hotel() {
       if (data.id) {
         setHotels([...hotels, data]);
         setNewHotel({ name: '', address: '', phone: '', email: '' });
-        Swal.fire('Éxito', 'Hotel creado correctamente.', 'success');
+        Swal.fire('Éxito', 'Hotel creado correctamente.', 'success').then(() => {
+          window.location.reload();
+        });
       } else {
         console.error('El hotel creado no tiene un ID:', data);
       }
@@ -65,7 +67,9 @@ export function Hotel() {
       if (updatedHotel && updatedHotel.id) {
         setHotels(hotels.map(hotel => (hotel.id === updatedHotel.id ? updatedHotel : hotel)));
         setEditingHotel(null);
-        Swal.fire('Éxito', 'Hotel actualizado correctamente.', 'success');
+        Swal.fire('Éxito', 'Hotel actualizado correctamente.', 'success').then(() => {
+          window.location.reload();
+        });
       } else {
         console.error('El hotel actualizado no tiene un ID:', updatedHotel);
       }
@@ -87,7 +91,9 @@ export function Hotel() {
       if (result.isConfirmed) {
         hotelService.deleteHotelById(id).then(() => {
           setHotels(hotels.filter(hotel => hotel.id !== id));
-          Swal.fire('Eliminado', 'Hotel eliminado correctamente.', 'success');
+          Swal.fire('Eliminado', 'Hotel eliminado correctamente.', 'success').then(() => {
+            window.location.reload();
+          });
         }).catch(error => {
           console.error('Error al eliminar el hotel:', error);
           Swal.fire('Error', 'Error al eliminar el hotel.', 'error');
@@ -99,7 +105,6 @@ export function Hotel() {
   const handleEdit = (hotel) => {
     setEditingHotel(hotel);
   };
-
   return (
     <div className="container mt-5">
       <form onSubmit={handleSubmit}>
