@@ -7,6 +7,7 @@ import userService from '../../../service/userService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/Home.css';
 import TourModal from './TourModal';
+import Swal from 'sweetalert2';
 
 const Tour = () => {
   const [users, setUsers] = useState([]);
@@ -31,6 +32,9 @@ const Tour = () => {
       setHotels(hotels);
       setRestaurants(restaurants);
       setUsers(users);
+    }).catch(error => {
+      console.error('Error al cargar datos:', error);
+      Swal.fire('Error', 'Error al cargar los datos. Inténtalo más tarde.', 'error');
     });
   }, []);
 
@@ -58,14 +62,33 @@ const Tour = () => {
     tourService.createTour(tourData).then(data => {
       setTours(prevTours => [...prevTours, data]);
       setNewTour({ name: '', description: '', price: '', days_duration: '1', sector: '', start_date: '', conductors: '', guides: '', transport: '', hotel: '', restaurant: '' });
+      Swal.fire('Éxito', 'Tour creado correctamente.', 'success');
       window.location.reload();
-    }).catch(console.error);
+    }).catch(error => {
+      console.error('Error al crear el tour:', error);
+      Swal.fire('Error', 'Error al crear el tour. Inténtalo más tarde.', 'error');
+    });
   };
 
   const handleDelete = (id) => {
-    tourService.deleteTourById(id).then(() => {
-      setTours(prevTours => prevTours.filter(tour => tour.id !== id));
-    }).catch(console.error);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esto.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.isConfirmed) {
+        tourService.deleteTourById(id).then(() => {
+          setTours(prevTours => prevTours.filter(tour => tour.id !== id));
+          Swal.fire('Eliminado', 'Tour eliminado correctamente.', 'success');
+        }).catch(error => {
+          console.error('Error al eliminar el tour:', error);
+          Swal.fire('Error', 'Error al eliminar el tour. Inténtalo más tarde.', 'error');
+        });
+      }
+    });
   };
 
   const handleEdit = (tour) => {
@@ -93,11 +116,16 @@ const Tour = () => {
       setTours(prevTours => prevTours.map(tour => tour.id === updatedTour.id ? updatedTour : tour));
       setEditingTour(null);
       setShowUpdateModal(false);
-    }).catch(console.error);
+      Swal.fire('Éxito', 'Tour actualizado correctamente.', 'success');
+    }).catch(error => {
+      console.error('Error al actualizar el tour:', error);
+      Swal.fire('Error', 'Error al actualizar el tour. Inténtalo más tarde.', 'error');
+    });
   };
 
   const drivers = users.filter(user => user.role === 'DRIVER');
   const guides = users.filter(user => user.role === 'GUIDE');
+
 
   return (
     <div className="container">
