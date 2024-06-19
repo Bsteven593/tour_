@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import transportService from '../../../service/transportService';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Swal from 'sweetalert2';
 
 export function Transport() {
   const [transports, setTransports] = useState([]);
@@ -27,7 +28,7 @@ export function Transport() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newTransport.name || !newTransport.price || !newTransport.capacity) {
-      alert('Por favor, complete todos los campos.');
+      Swal.fire('Error', 'Por favor, complete todos los campos.', 'error');
       return;
     }
 
@@ -42,12 +43,13 @@ export function Transport() {
       if (data.id) {
         setTransports([...transports, data]);
         setNewTransport({ name: '', price: '', capacity: '' });
-        window.location.reload();
+        Swal.fire('Éxito', 'Transporte creado correctamente.', 'success');
       } else {
         console.error('El transporte creado no tiene un ID:', data);
       }
     } catch (error) {
       console.error('Error al crear el transporte:', error);
+      Swal.fire('Error', 'Error al crear el transporte.', 'error');
     }
   };
 
@@ -62,7 +64,7 @@ export function Transport() {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     if (!editingTransport.name || !editingTransport.price || !editingTransport.capacity) {
-      alert('Por favor, complete todos los campos.');
+      Swal.fire('Error', 'Por favor, complete todos los campos.', 'error');
       return;
     }
 
@@ -77,18 +79,33 @@ export function Transport() {
       setTransports(transports.map(transport => (transport.id === updatedTransport.id ? updatedTransport : transport)));
       setEditingTransport(null);
       setIsModalOpen(false);
+      Swal.fire('Éxito', 'Transporte actualizado correctamente.', 'success');
     } catch (error) {
       console.error('Error al actualizar el transporte:', error);
+      Swal.fire('Error', 'Error al actualizar el transporte.', 'error');
     }
   };
 
   const handleDelete = async (id) => {
-    try {
-      await transportService.deleteTransportById(id);
-      setTransports(transports.filter(transport => transport.id !== id));
-    } catch (error) {
-      console.error('Error al eliminar el transporte:', error);
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esto.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminarlo',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await transportService.deleteTransportById(id);
+          setTransports(transports.filter(transport => transport.id !== id));
+          Swal.fire('Eliminado', 'Transporte eliminado correctamente.', 'success');
+        } catch (error) {
+          console.error('Error al eliminar el transporte:', error);
+          Swal.fire('Error', 'Error al eliminar el transporte.', 'error');
+        }
+      }
+    });
   };
 
   const handleEdit = (transport) => {
@@ -115,7 +132,7 @@ export function Transport() {
               value={newTransport.name}
               onChange={handleChange}
               required
-              pattern="[a-zA-Z\s]+" // Solo permite letras y espacios
+              pattern="[a-zA-Z\s]+"
               title="El nombre solo debe contener letras."
             />
           </div>
@@ -129,8 +146,8 @@ export function Transport() {
               value={newTransport.price}
               onChange={handleChange}
               required
-              min="0" // Valor mínimo de 0
-              step="0.01" // Permite decimales
+              min="0"
+              step="0.01"
               title="El precio solo debe contener números positivos."
             />
           </div>
@@ -144,8 +161,8 @@ export function Transport() {
               value={newTransport.capacity}
               onChange={handleChange}
               required
-              min="1" // Capacidad mínima de 1
-              step="1" // Solo permite números enteros
+              min="1"
+              step="1"
               title="La capacidad solo debe contener números enteros positivos."
             />
           </div>
@@ -201,7 +218,7 @@ export function Transport() {
                       value={editingTransport.name}
                       onChange={handleUpdateChange}
                       required
-                      pattern="[a-zA-Z\s]+" // Solo permite letras y espacios
+                      pattern="[a-zA-Z\s]+"
                       title="El nombre solo debe contener letras."
                     />
                   </div>
@@ -215,8 +232,8 @@ export function Transport() {
                       value={editingTransport.price}
                       onChange={handleUpdateChange}
                       required
-                      min="0" // Valor mínimo de 0
-                      step="0.01" // Permite decimales
+                      min="0"
+                      step="0.01"
                       title="El precio solo debe contener números positivos."
                     />
                   </div>
@@ -230,8 +247,8 @@ export function Transport() {
                       value={editingTransport.capacity}
                       onChange={handleUpdateChange}
                       required
-                      min="1" // Capacidad mínima de 1
-                      step="1" // Solo permite números enteros
+                      min="1"
+                      step="1"
                       title="La capacidad solo debe contener números enteros positivos."
                     />
                   </div>

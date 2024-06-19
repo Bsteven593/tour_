@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import restaurantService from '../../../service/restaurantService';
+import Swal from 'sweetalert2';
 
 function Restaurant() {
   const [restaurants, setRestaurants] = useState([]);
@@ -10,6 +11,8 @@ function Restaurant() {
   useEffect(() => {
     restaurantService.getAllRestaurants().then(data => {
       setRestaurants(data);
+    }).catch(error => {
+      console.error('Error al cargar restaurantes:', error);
     });
   }, []);
 
@@ -23,20 +26,40 @@ function Restaurant() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!newRestaurant.name || !newRestaurant.address) {
+      Swal.fire('Error', 'Por favor, complete todos los campos.', 'error');
+      return;
+    }
+
     restaurantService.createRestaurant(newRestaurant).then(data => {
       setRestaurants([...restaurants, data]);
       setNewRestaurant({ name: '', address: '' });
-      window.location.reload();
+      Swal.fire('Éxito', 'Restaurante creado correctamente.', 'success');
     }).catch(error => {
       console.error('Error al crear el restaurante:', error);
+      Swal.fire('Error', 'Error al crear el restaurante.', 'error');
     });
   };
 
   const handleDelete = (id) => {
-    restaurantService.deleteRestaurantById(id).then(() => {
-      setRestaurants(restaurants.filter(restaurant => restaurant.id !== id));
-    }).catch(error => {
-      console.error('Error al eliminar el restaurante:', error);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esto.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminarlo',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await restaurantService.deleteRestaurantById(id);
+          setRestaurants(restaurants.filter(restaurant => restaurant.id !== id));
+          Swal.fire('Eliminado', 'Restaurante eliminado correctamente.', 'success');
+        } catch (error) {
+          console.error('Error al eliminar el restaurante:', error);
+          Swal.fire('Error', 'Error al eliminar el restaurante.', 'error');
+        }
+      }
     });
   };
 
@@ -55,12 +78,19 @@ function Restaurant() {
 
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
+    if (!editingRestaurant.name || !editingRestaurant.address) {
+      Swal.fire('Error', 'Por favor, complete todos los campos.', 'error');
+      return;
+    }
+
     restaurantService.partialUpdateRestaurant(editingRestaurant.id, editingRestaurant).then(updatedRestaurant => {
       setRestaurants(restaurants.map(restaurant => (restaurant.id === updatedRestaurant.id ? updatedRestaurant : restaurant)));
       setEditingRestaurant(null);
       setShowUpdateModal(false);
+      Swal.fire('Éxito', 'Restaurante actualizado correctamente.', 'success');
     }).catch(error => {
       console.error('Error al actualizar el restaurante:', error);
+      Swal.fire('Error', 'Error al actualizar el restaurante.', 'error');
     });
   };
 

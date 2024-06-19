@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import hotelService from '../../../service/hotelService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/Home.css';
+import Swal from 'sweetalert2';
 
 export function Hotel() {
   const [hotels, setHotels] = useState([]);
@@ -26,9 +27,8 @@ export function Hotel() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Validar el estado del nuevo hotel antes de enviarlo
     if (!newHotel.name || !newHotel.address || !newHotel.phone || !newHotel.email) {
-      alert('Por favor, complete todos los campos.');
+      Swal.fire('Error', 'Por favor, complete todos los campos.', 'error');
       return;
     }
 
@@ -36,12 +36,13 @@ export function Hotel() {
       if (data.id) {
         setHotels([...hotels, data]);
         setNewHotel({ name: '', address: '', phone: '', email: '' });
-        window.location.reload();
+        Swal.fire('Éxito', 'Hotel creado correctamente.', 'success');
       } else {
         console.error('El hotel creado no tiene un ID:', data);
       }
     }).catch(error => {
       console.error('Error al crear el hotel:', error);
+      Swal.fire('Error', 'Error al crear el hotel.', 'error');
     });
   };
 
@@ -55,9 +56,8 @@ export function Hotel() {
 
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
-
     if (!editingHotel.name || !editingHotel.address || !editingHotel.phone || !editingHotel.email) {
-      alert('Por favor, complete todos los campos.');
+      Swal.fire('Error', 'Por favor, complete todos los campos.', 'error');
       return;
     }
 
@@ -65,19 +65,34 @@ export function Hotel() {
       if (updatedHotel && updatedHotel.id) {
         setHotels(hotels.map(hotel => (hotel.id === updatedHotel.id ? updatedHotel : hotel)));
         setEditingHotel(null);
+        Swal.fire('Éxito', 'Hotel actualizado correctamente.', 'success');
       } else {
         console.error('El hotel actualizado no tiene un ID:', updatedHotel);
       }
     }).catch(error => {
       console.error('Error al actualizar el hotel:', error);
+      Swal.fire('Error', 'Error al actualizar el hotel.', 'error');
     });
   };
 
   const handleDelete = (id) => {
-    hotelService.deleteHotelById(id).then(() => {
-      setHotels(hotels.filter(hotel => hotel.id !== id));
-    }).catch(error => {
-      console.error('Error al eliminar el hotel:', error);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esto.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminarlo',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        hotelService.deleteHotelById(id).then(() => {
+          setHotels(hotels.filter(hotel => hotel.id !== id));
+          Swal.fire('Eliminado', 'Hotel eliminado correctamente.', 'success');
+        }).catch(error => {
+          console.error('Error al eliminar el hotel:', error);
+          Swal.fire('Error', 'Error al eliminar el hotel.', 'error');
+        });
+      }
     });
   };
 
@@ -99,7 +114,7 @@ export function Hotel() {
               value={newHotel.name} 
               onChange={handleChange} 
               required 
-              pattern="[a-zA-Z\s]+" // Solo permite letras y espacios
+              pattern="[a-zA-Z\s]+" 
               title="El nombre solo debe contener letras."
             />
           </div>
@@ -127,7 +142,7 @@ export function Hotel() {
               value={newHotel.phone} 
               onChange={handleChange} 
               required 
-              pattern="\d+" // Solo permite números enteros positivos
+              pattern="\d+" 
               title="El teléfono solo debe contener números."
             />
           </div>
@@ -141,7 +156,7 @@ export function Hotel() {
               value={newHotel.email} 
               onChange={handleChange} 
               required 
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" // Valida correos electrónicos
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
               title="Por favor, ingrese un correo electrónico válido."
             />
           </div>
@@ -200,7 +215,7 @@ export function Hotel() {
                       value={editingHotel.name} 
                       onChange={handleUpdateChange} 
                       required 
-                      pattern="[a-zA-Z\s]+" // Solo permite letras y espacios
+                      pattern="[a-zA-Z\s]+" 
                       title="El nombre solo debe contener letras."
                     />
                   </div>
@@ -226,7 +241,7 @@ export function Hotel() {
                       value={editingHotel.phone} 
                       onChange={handleUpdateChange} 
                       required 
-                      pattern="\d+" // Solo permite números enteros positivos
+                      pattern="\d+" 
                       title="El teléfono solo debe contener números."
                     />
                   </div>
@@ -240,7 +255,7 @@ export function Hotel() {
                       value={editingHotel.email} 
                       onChange={handleUpdateChange} 
                       required 
-                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" // Valida correos electrónicos
+                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
                       title="Por favor, ingrese un correo electrónico válido."
                     />
                   </div>
